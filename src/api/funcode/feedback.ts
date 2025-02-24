@@ -27,7 +27,7 @@ export function addFeedback(data: any) {
 }
 
 // 修改课程反馈
-export function updateFeedback(data) {
+export function updateFeedback(data:any) {
     return request({
         url: '/system/feedback',
         method: 'put',
@@ -36,13 +36,13 @@ export function updateFeedback(data) {
 }
 
 // 删除课程反馈
-export function delFeedback(id) {
+export function delFeedback(id:number) {
     return request({
         url: '/system/feedback/' + id,
         method: 'delete',
     });
 }
-export function email(params) {
+export function email(params:any) {
     return request({
         url: '/email/send',
         method: 'get',

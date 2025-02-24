@@ -14,6 +14,7 @@ declare module '@vue/runtime-core' {
     DictTag: typeof import('./components/DictTag/index.vue')['default']
     Doc: typeof import('./components/RuoYi/Doc/index.vue')['default']
     Editor: typeof import('./components/Editor/index.vue')['default']
+    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -82,6 +83,7 @@ declare module '@vue/runtime-core' {
     SvgIcon: typeof import('./components/SvgIcon/index.vue')['default']
     TopNav: typeof import('./components/TopNav/index.vue')['default']
     TreeSelect: typeof import('./components/TreeSelect/index.vue')['default']
+    VideoPlayer: typeof import('./components/VideoPlayer/index.vue')['default']
     Week: typeof import('./components/Crontab/week.vue')['default']
     Year: typeof import('./components/Crontab/year.vue')['default']
   }
