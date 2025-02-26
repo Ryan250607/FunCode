@@ -1,12 +1,21 @@
 <template>
   <div class="login">
+    <LanguageToggle />
     <el-form
       ref="loginRef"
       :model="loginForm"
       :rules="loginRules"
       class="login-form"
     >
-      <h3 class="title">FunCode</h3>
+      <div>
+        <div class="flex justify-center items-center">
+          <span class="mr-3">
+            <img src="@/assets/logo/logo.png" alt="logo" class="w-10 h-10" />
+          </span>
+          <span class="font-semibold text-xl">FunCode</span>
+        </div>
+        <div class="mt-2 mb-10 text-center">{{ $t("login.username") }}</div>
+      </div>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
@@ -16,8 +25,11 @@
           placeholder="账号"
         >
           <template #prefix
-            ><svg-icon icon-class="user" class="el-input__icon input-icon"
-          /></template>
+            >
+            <!-- <svg-icon icon-class="user" class="el-input__icon input-icon"/> -->
+            <!-- <font-awesome-icon icon="fa-regular fa-user" /> -->
+            <el-icon><User /></el-icon>
+        </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
@@ -30,8 +42,7 @@
           @keyup.enter="handleLogin"
         >
           <template #prefix
-            ><svg-icon icon-class="password" class="el-input__icon input-icon"
-          /></template>
+            ><el-icon><Lock /></el-icon></template>
         </el-input>
       </el-form-item>
       <el-form-item prop="code" v-if="captchaEnabled">
@@ -61,6 +72,7 @@
           :loading="loading"
           size="large"
           type="primary"
+          class="login-btn w-full bg-white text-primary-400 hover:bg-primary hover:text-white transition-all duration-300"
           style="width: 100%"
           @click.prevent="handleLogin"
         >
@@ -89,7 +101,6 @@ import useUserStore from "@/store/modules/user";
 import { useRouter } from "vue-router";
 import { FormInstance } from "element-plus";
 import { ref } from "vue";
-
 const userStore = useUserStore();
 const router = useRouter();
 const loginForm = ref<any>({
@@ -191,11 +202,6 @@ getCookie();
   height: 100%;
   background-image: url("../assets/images/login-background.jpg");
   background-size: cover;
-}
-.title {
-  margin: 0px auto 30px auto;
-  text-align: center;
-  color: #707070;
 }
 
 .login-form {

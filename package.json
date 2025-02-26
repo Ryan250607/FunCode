@@ -9,13 +9,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "2.0.10",
+    "@element-plus/icons-vue": "2.3.1",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/vue-fontawesome": "latest-3",
     "@vueup/vue-quill": "1.1.0",
     "@vueuse/core": "9.5.0",
     "@zeronejs/utils": "^1.4.0",
     "axios": "0.27.2",
     "echarts": "5.4.0",
-    "element-plus": "2.2.27",
+    "element-plus": "2.9.5",
     "file-saver": "2.0.5",
     "fuse.js": "6.6.2",
     "js-cookie": "3.0.1",
@@ -24,9 +29,11 @@
     "nprogress": "0.2.0",
     "pinia": "2.0.22",
     "video.js": "^8.21.0",
+    "videojs-hotkeys": "^0.2.30",
     "vite-plugin-monaco-editor": "^1.1.0",
     "vue": "3.4.15",
     "vue-cropper": "1.0.3",
+    "vue-i18n": "^11.1.1",
     "vue-router": "4.1.4"
   },
   "devDependencies": {

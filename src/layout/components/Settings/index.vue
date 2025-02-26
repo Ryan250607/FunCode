@@ -128,7 +128,7 @@ const theme = ref(settingsStore.theme);
 const sideTheme = ref(settingsStore.sideTheme);
 const storeSettings = computed(() => settingsStore);
 const predefineColors = ref([
-    '#409EFF',
+    '#B0A1FF',
     '#ff4500',
     '#ff8c00',
     '#ffd700',

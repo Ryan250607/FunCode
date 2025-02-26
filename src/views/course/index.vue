@@ -1,7 +1,7 @@
 <template>
   <div style="padding: 20px 20px 0">
     <!-- 课程列表 -->
-    <el-row :gutter="16" justify="start">
+    <el-row :gutter="16" justify="start" class="w-full">
       <el-col
         v-for="course in courses"
         :key="course.id"
@@ -9,11 +9,10 @@
         :sm="12"
         :md="8"
         :lg="6"
+        class="mb-4"
       >
-        <el-card
-          :body-style="{ padding: '16px' }"
-          shadow="hover"
-          style="width: 100%"
+        <div
+          class="bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg overflow-hidden cursor-pointer"
           @click="viewDetail(course)"
         >
           <el-image
@@ -22,38 +21,30 @@
                 ? course.coverImage
                 : baseURL + course.coverImage
             "
-            style="
-              width: 100%;
-              height: 200px;
-              object-fit: cover;
-              margin-bottom: 15px;
-            "
+            class="w-full aspect-[16/9] object-cover rounded-t-lg"
           />
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              gap: 8px;
-              margin-bottom: 8px;
-            "
-          >
-            <h3
-              :style="{ fontSize: ['16px', null, '18px', '20px'], margin: 0 }"
-            >
-              {{ course.title }}
-            </h3>
-            <dict-tag :options="difficult_value" :value="course.difficulty" />
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="text-base font-bold text-gray-800 truncate">
+                {{ course.title }}
+              </div>
+              <dict-tag :options="difficult_value" :value="course.difficulty" />
+            </div>
+            <el-progress
+              :percentage="calculatePercentage(course)"
+              class="w-full"
+            />
+            <div class="mt-3">
+              <el-button
+                size="medium"
+                class="w-full"
+                @click.stop="goCoding(course.id)"
+              >
+                开始答题
+              </el-button>
+            </div>
           </div>
-          <el-progress
-            :percentage="calculatePercentage(course)"
-            style="width: 100%; white-space: nowrap"
-          />
-          <div style="padding: 10px">
-            <el-button size="medium" @click.stop="goCoding(course.id)">
-              开始答题
-            </el-button>
-          </div>
-        </el-card>
+        </div>
       </el-col>
     </el-row>
 
@@ -75,7 +66,7 @@
       <el-row :gutter="20">
         <el-col :span="18">
           <VideoPlayer
-          ref="videoPlayerRef"
+            ref="videoPlayerRef"
             :options="playerOptions"
             @ended="handleVideoEnded(currentChapter)"
           />
@@ -262,7 +253,7 @@ const rules = {
 // 默认播放器配置
 const playerOptions = ref<VideoJsPlayerOptions>({
   playbackRates: [0.5, 1.0, 1.5, 2.0],
-  autoplay: true,
+  autoplay: false,
   muted: false,
   loop: false,
   preload: "auto",
@@ -357,7 +348,7 @@ async function viewChapterDetail(chapter: Chapter) {
       const videoUrl = response.rows[0].videoUrl;
       playerOptions.value.sources = [
         {
-          src: "/dev-api/"+videoUrl,
+          src: "/dev-api/" + videoUrl,
           type: "application/x-mpegURL",
         },
       ];
@@ -413,24 +404,19 @@ async function submitFeedback() {
   });
 }
 
-
-
 function closeDetail() {
-  if(videoPlayerRef.value){
+  if (videoPlayerRef.value) {
     videoPlayerRef.value.pauseVideo();
   }
   detailVisible.value = false;
 }
-
-
 
 // 生命周期
 onMounted(() => {
   getList();
 });
 
-onUnmounted(() => {
-});
+onUnmounted(() => {});
 </script>
 
 <style scoped>
@@ -445,15 +431,5 @@ onUnmounted(() => {
   background-color: #e3b63e !important;
 }
 
-::v-deep .vjs-custom-skin > .video-js .vjs-big-play-button {
-  outline: none !important;
-  border: none !important;
-  font-size: 3em !important;
-  background-color: #9a8fef !important;
-  transition: background-color 0.3s ease;
-}
 
-::v-deep .vjs-custom-skin > .video-js .vjs-big-play-button:hover {
-  background-color: #6959cd !important;
-}
 </style>

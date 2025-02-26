@@ -7,7 +7,6 @@ import createCompression from './compression';
 import createSetupExtend from './setup-extend';
 import { PluginOption } from 'vite';
 import ViteMonacoPlugin from 'vite-plugin-monaco-editor'
-
 export default function createVitePlugins(viteEnv: Record<string, string>, isBuild = false) {
     const vitePlugins: PluginOption[] = [vue()];
     vitePlugins.push(createAutoImport());
