@@ -5,9 +5,9 @@
       ref="queryForm"
       :inline="true"
       v-show="showSearch"
-      label-width="68px"
     >
-      <el-form-item label="用户" prop="userId">
+    
+      <el-form-item class="w-32"  label="用户" prop="userId">
         <el-select
           v-model="queryParams.userId"
           placeholder="请选择用户"
@@ -21,7 +21,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="课程" prop="courseId">
+      <el-form-item class="w-44" label="课程" prop="courseId">
         <el-select
           v-model="queryParams.courseId"
           placeholder="请选择课程"
@@ -35,7 +35,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="反馈类型" prop="feedbackType">
+      <el-form-item class="w-44" label="反馈类型" prop="feedbackType">
         <el-select
           v-model="queryParams.feedbackType"
           placeholder="请选择反馈类型"
@@ -49,7 +49,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="反馈状态" prop="status">
+      <el-form-item class="w-44" label="反馈状态" prop="status">
         <el-select
           v-model="queryParams.status"
           placeholder="请选择反馈状态"
@@ -86,7 +86,7 @@
           type="success"
           plain
           icon="Edit"
-          size="mini"
+          
           :disabled="single"
           @click="handleUpdate"
           >修改</el-button
@@ -97,7 +97,7 @@
           type="danger"
           plain
           icon="Delete"
-          size="mini"
+          
           :disabled="multiple"
           @click="handleDelete"
           >删除</el-button
@@ -108,7 +108,7 @@
           type="warning"
           plain
           icon="Download"
-          size="mini"
+          
           @click="handleExport"
           >导出</el-button
         >

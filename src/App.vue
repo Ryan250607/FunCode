@@ -1,17 +1,21 @@
 <template>
-  <ElConfigProvider :locale="locale === 'en' ? en : zhCn">
-    <router-view />
-  </ElConfigProvider>
+  <el-config-provider :locale="elementLocale">
+    <router-view></router-view>
+  </el-config-provider>
 </template>
 
 <script setup lang="ts">
 import useSettingsStore from "@/store/modules/settings";
 import { handleThemeStyle } from "@/utils/theme";
 import { nextTick, onMounted } from "vue";
-import { useI18n } from "vue-i18n";
-const { locale } = useI18n();
-import en from 'element-plus/es/locale/lang/en';
-import zhCn from 'element-plus/es/locale/lang/zh-cn';
+
+
+import { useElementPlusLocale } from "@/hooks/useElementPlusLocale";
+
+/** 使用Element Plus语言环境hooks */
+const { elementLocale } = useElementPlusLocale();
+console.log(elementLocale.value);
+
 onMounted(() => {
   nextTick(() => {
     // 初始化主题样式

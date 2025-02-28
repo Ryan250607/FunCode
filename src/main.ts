@@ -3,7 +3,6 @@ import { createApp } from "vue";
 import Cookies from "js-cookie";
 
 import ElementPlus from "element-plus";
-import en from 'element-plus/es/locale/lang/en'; // 英文语言包
 import "@/assets/styles/index.scss"; // global css
 // element css
 import "element-plus/es/components/message/style/css";
@@ -56,12 +55,12 @@ import TreeSelect from "@/components/TreeSelect/index.vue";
 // 字典标签组件
 import DictTag from "@/components/DictTag/index.vue";
 import { library } from '@fortawesome/fontawesome-svg-core'
-// import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { faLanguage } from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // i18n
 import i18n from '@/i18n/index'
-library.add(faUser)
+library.add(faUser,faLanguage)
 
 const app = createApp(App);
 
@@ -94,11 +93,6 @@ app.use(i18n)
 app.component("svg-icon", SvgIcon);
 
 directive(app);
-// 使用element-plus 并且设置全局的大小
-app.use(ElementPlus, {
-  locale: en,
-  // 支持 large、default、small
-  size: "default",
-});
+app.use(ElementPlus);
 
 app.mount("#app");

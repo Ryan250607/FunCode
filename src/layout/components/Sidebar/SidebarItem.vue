@@ -15,7 +15,7 @@
                     <svg-icon :icon-class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" />
                     <template #title
                         ><span class="menu-title" :title="hasTitle(onlyOneChild.meta.title)">{{
-                            onlyOneChild.meta.title
+                            tanslateMenuTitle(onlyOneChild.meta.icon)
                         }}</span></template
                     >
                 </el-menu-item>
@@ -25,7 +25,7 @@
         <el-sub-menu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
             <template v-if="item.meta" #title>
                 <svg-icon :icon-class="item.meta && item.meta.icon" />
-                <span class="menu-title" :title="hasTitle(item.meta.title)">{{ item.meta.title }}</span>
+                <span class="menu-title" :title="hasTitle(item.meta.title)">{{ tanslateMenuTitle(item.meta.icon) }}</span>
             </template>
 
             <sidebar-item
@@ -47,6 +47,8 @@ import { getNormalPath } from '@/utils/ruoyi';
 // import subMenu from 'element-plus/es/components/menu/src/sub-menu';
 // import item from 'element-plus/es/components/space/src/item';
 import { ref } from 'vue';
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 const props = defineProps({
     // route object
@@ -113,6 +115,13 @@ function hasTitle(title: any) {
         return title;
     } else {
         return '';
+    }
+}
+function tanslateMenuTitle(item: any) {
+    if (t('menus.'+ item)) {
+        return t('menus.'+ item);
+    } else {
+        return item;
     }
 }
 </script>

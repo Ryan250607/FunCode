@@ -1,6 +1,8 @@
 <template>
   <div class="login">
+    <div class="absolute top-0 right-0 p-4">
     <LanguageToggle />
+    </div>
     <el-form
       ref="loginRef"
       :model="loginForm"
@@ -14,7 +16,8 @@
           </span>
           <span class="font-semibold text-xl">FunCode</span>
         </div>
-        <div class="mt-2 mb-10 text-center">{{ $t("login.username") }}</div>
+        <div class="mt-2 mb-10 text-center">
+        </div>
       </div>
       <el-form-item prop="username">
         <el-input
@@ -22,14 +25,13 @@
           type="text"
           size="large"
           auto-complete="off"
-          placeholder="账号"
+          :placeholder="t('Please_enter_your_username')"
         >
-          <template #prefix
-            >
+          <template #prefix>
             <!-- <svg-icon icon-class="user" class="el-input__icon input-icon"/> -->
             <!-- <font-awesome-icon icon="fa-regular fa-user" /> -->
             <el-icon><User /></el-icon>
-        </template>
+          </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
@@ -38,11 +40,12 @@
           type="password"
           size="large"
           auto-complete="off"
-          placeholder="密码"
+         :placeholder="t('Please_enter_your_password')"
           @keyup.enter="handleLogin"
         >
           <template #prefix
-            ><el-icon><Lock /></el-icon></template>
+            ><el-icon><Lock /></el-icon
+          ></template>
         </el-input>
       </el-form-item>
       <el-form-item prop="code" v-if="captchaEnabled">
@@ -50,7 +53,7 @@
           v-model="loginForm.code"
           size="large"
           auto-complete="off"
-          placeholder="验证码"
+          :placeholder="t('Please_enter_your_verification_code')"
           style="width: 63%"
           @keyup.enter="handleLogin"
         >
@@ -65,7 +68,7 @@
       <el-checkbox
         v-model="loginForm.rememberMe"
         style="margin: 0px 0px 25px 0px"
-        >记住密码</el-checkbox
+        >{{ t('remember_password') }}</el-checkbox
       >
       <el-form-item style="width: 100%">
         <el-button
@@ -76,8 +79,8 @@
           style="width: 100%"
           @click.prevent="handleLogin"
         >
-          <span v-if="!loading">登 录</span>
-          <span v-else>登 录 中...</span>
+          <span v-if="!loading">{{ t("login") }}</span>
+          <span v-else> {{ t("message_loading") }}</span>
         </el-button>
         <div style="float: right" v-if="register">
           <router-link class="link-type" :to="'/register'"
@@ -101,6 +104,9 @@ import useUserStore from "@/store/modules/user";
 import { useRouter } from "vue-router";
 import { FormInstance } from "element-plus";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
+
 const userStore = useUserStore();
 const router = useRouter();
 const loginForm = ref<any>({
@@ -110,11 +116,10 @@ const loginForm = ref<any>({
   code: "",
   uuid: "",
 });
-
 const loginRules = {
-  username: [{ required: true, trigger: "blur", message: "请输入您的账号" }],
-  password: [{ required: true, trigger: "blur", message: "请输入您的密码" }],
-  code: [{ required: true, trigger: "change", message: "请输入验证码" }],
+  username: [{ required: true, trigger: "blur",message: t('Please_enter_your_username') }],
+  password: [{ required: true, trigger: "blur" ,message: t("Please_enter_your_password"),}],
+  code: [{ required: true, trigger: "change" }],
 };
 
 const codeUrl = ref("");

@@ -17,21 +17,21 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="Search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="Refresh" size="mini" @click="resetQuery">重置</el-button>
+          <el-button type="primary" icon="Search"  @click="handleQuery">搜索</el-button>
+          <el-button icon="Refresh"  @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
   
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
-          <el-button type="primary" plain icon="Plus" size="mini" @click="handleAdd">新增</el-button>
+          <el-button type="primary" plain icon="Plus"  @click="handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
           <el-button
             type="success"
             plain
             icon="Edit"
-            size="mini"
+            
             :disabled="single"
             @click.stop="handleUpdate"
           >修改</el-button>
@@ -41,13 +41,13 @@
             type="danger"
             plain
             icon="Delete"
-            size="mini"
+            
             :disabled="multiple"
             @click.stop="handleDelete"
           >删除</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="warning" plain icon="Download" size="mini" @click="handleExport">导出</el-button>
+          <el-button type="warning" plain icon="Download"  @click="handleExport">导出</el-button>
         </el-col>
         <right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
       </el-row>
@@ -64,8 +64,8 @@
         <el-table-column label="章节排序" align="center" prop="chaptersOrder" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="scope">
-            <el-button size="mini" type="text" icon="Edit" @click.stop="handleUpdate(scope.row)">修改</el-button>
-            <el-button size="mini" type="text" icon="Delete" @click.stop="handleDelete(scope.row)">删除</el-button>
+            <el-button  type="text" icon="Edit" @click.stop="handleUpdate(scope.row)">修改</el-button>
+            <el-button  type="text" icon="Delete" @click.stop="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

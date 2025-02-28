@@ -1,27 +1,31 @@
 <template>
   <div style="padding: 50px">
     <h1>阅卷列表</h1>
-    <el-select
-      v-model="queryParams.courseId"
-      placeholder="请选择课程"
-      size="mini"
-      clearable
-    >
-      <el-option
-        v-for="dict in courseDict"
-        :key="dict.value"
-        :label="dict.label"
-        :value="dict.value"
-      />
-    </el-select>
-    <el-button
-      type="primary"
-      icon="Search"
-      size="mini"
-      style="margin-left: 10px"
-      @click="handleQuery"
-      >搜索</el-button
-    >
+    <div class="flex mb-3">
+      <div class="w-40">
+        <el-select
+        v-model="queryParams.courseId"
+        placeholder="请选择课程"
+        clearable
+      >
+        <el-option
+          v-for="dict in courseDict"
+          :key="dict.value"
+          :label="dict.label"
+          :value="dict.value"
+        />
+      </el-select>
+      </div>
+      
+      <el-button
+        type="primary"
+        icon="Search"
+        style="margin-left: 10px"
+        @click="handleQuery"
+        >搜索</el-button
+      >
+    </div>
+
     <el-table :data="gradingRecords" style="width: 100%">
       <el-table-column
         prop="studentId"

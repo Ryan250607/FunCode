@@ -1,58 +1,101 @@
+<template>
+  <div class="flex items-center">
+    <el-dropdown trigger="hover" placement="bottom" @command="confirmLang">
+      <div class="reference_btn">
+        <svg-icon icon-class="lang" class="text-xl" />
+        <!-- <span class="current_language">{{ current_language }}</span> -->
+      </div>
+      <template #dropdown>
+        <el-dropdown-menu class="ifFlagDropdown">
+          <el-dropdown-item
+            v-for="item in langList"
+            :key="item.category"
+            :command="item.category"
+            :class="{ 'is-selected': item.category === selectedLang }"
+          >
+            {{ item.lang }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
+  </div>
+</template>
+
 <script setup lang="ts">
-import useLocaleStore from '@/store/modules/i18n';
-import { ElMessage } from 'element-plus';
-import { useI18n } from 'vue-i18n'
+import { langList } from "@/utils/langList";
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+import CACHE_KEY from "@/constants/cache-key";
+import { getLocalData, setLocalData } from "@/utils/cache/local-storage";
 
-
-// 定义语言类型
-type LangType = 'zhCn' | 'en';
-
-// 语言显示映射
-const langType: Record<LangType, string> = {
-  zhCn: '中文',
-  en: 'English',
-};
-
-// 获取 Pinia store 和 i18n 实例
-const localeStore = useLocaleStore();
 const { locale } = useI18n();
+const router = useRouter();
 
-// 处理语言切换
-const handleCommand = (value: LangType) => {
-  if (localeStore.locale === value) return;
-  locale.value = value // 更新 i18n 实例的语言
-  localeStore.setlocale(value); // 更新 Pinia store 的语言
-  // ElMessage.closeAll();
-  // ElMessage.success(`${langType[value]}切换成功！`);
+const langue = computed<string>(() => {
+  return getLocalData(CACHE_KEY.LOCAL_LANG) || "en";
+});
+
+const selectedLang = ref<string>(langue.value);
+
+// const current_language = computed(() => {
+//   return langList.find((el) => el.category === selectedLang.value)?.lang || "English";
+// });
+
+const confirmLang = (lang: string) => {
+  selectedLang.value = lang;
+  locale.value = lang;
+  setLocalData(CACHE_KEY.LOCAL_LANG, lang);
+  router.go(0);
 };
 </script>
 
-<template>
-  <el-dropdown @command="handleCommand" class="lang-warp">
-    <span class="el-dropdown-link">
-      {{ langType[localeStore.locale] }}
-      <el-icon>
-        <arrow-down />
-      </el-icon>
-    </span>
-    <template #dropdown>
-      <el-dropdown-menu>
-        <el-dropdown-item command="zhCn">中文</el-dropdown-item>
-        <el-dropdown-item command="en">English</el-dropdown-item>
-      </el-dropdown-menu>
-    </template>
-  </el-dropdown>
-</template>
-
 <style scoped lang="scss">
-.lang-warp {
-  margin: 0 20px;
-  .el-dropdown-link {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    color: #606266; /* Element Plus 默认文字颜色，可调整 */
+.reference_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px 8px;
+
+  &:hover {
+    color: #9b6bff; /* 浅紫色 */
   }
 }
+
+:deep(.ifFlagDropdown) {
+  width: 260px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+:deep(.el-dropdown-menu__item) {
+  height: 25px;
+  line-height: 25px;
+  font-size: 12px;
+  padding: 0 15px;
+  color: #333;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  margin: 5px 0;
+
+  &:hover {
+    color: #9b6bff; /* 浅紫色 */
+    border: 1px solid #9b6bff23; /* 更浅的边框透明色 */
+    background-color: #9b6bff6b; /* 更浅的背景透明色 */
+  }
+
+  &.is-selected {
+    border: 1px solid #9b6bff; /* 浅紫色 */
+    background-color: #9b6bff; /* 浅紫色 */
+    color: #ffffff;
+  }
+}
+
+// @media screen and (max-width: 880px) {
+//   .current_language {
+//     display: none;
+//   }
+// }
 </style>
