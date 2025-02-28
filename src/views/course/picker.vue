@@ -50,7 +50,6 @@
               <el-button
                 v-if="!isCourseSelected(course.id)"
                 type="primary"
-                size="medium"
                 style="width: 100%"
                 @click="selectCourse(course.id)"
               >
@@ -59,7 +58,6 @@
               <el-button
                 v-else
                 type="danger"
-                size="medium"
                 style="width: 100%"
                 @click="cancelCourse(course.id)"
               >

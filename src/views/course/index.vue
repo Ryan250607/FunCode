@@ -36,7 +36,6 @@
             />
             <div class="mt-3">
               <el-button
-                size="medium"
                 class="w-full"
                 @click.stop="goCoding(course.id)"
               >
@@ -253,7 +252,7 @@ const rules = {
 // 默认播放器配置
 const playerOptions = ref<VideoJsPlayerOptions>({
   playbackRates: [0.5, 1.0, 1.5, 2.0],
-  autoplay: false,
+  autoplay: true,
   muted: false,
   loop: false,
   preload: "auto",
