@@ -14,7 +14,6 @@ import { useElementPlusLocale } from "@/hooks/useElementPlusLocale";
 
 /** 使用Element Plus语言环境hooks */
 const { elementLocale } = useElementPlusLocale();
-console.log(elementLocale.value);
 
 onMounted(() => {
   nextTick(() => {

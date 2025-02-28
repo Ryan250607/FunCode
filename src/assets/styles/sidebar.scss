@@ -24,8 +24,9 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    -webkit-box-shadow: 2px 0 6px rgba(0,21,41,.35);
-    box-shadow: 2px 0 6px rgba(0,21,41,.35);
+    // -webkit-box-shadow: 2px 0 6px rgba(0,21,41,.35);
+    // box-shadow: 2px 0 6px rgba(0,21,41,.35);
+    border-inline-end:1px solid rgba(5, 5, 5, 0.06);
 
     // reset element-ui css
     .horizontal-collapse-transition {

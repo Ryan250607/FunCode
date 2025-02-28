@@ -11,16 +11,26 @@ const zh = {
 
   // 菜单配置（优化语言表达）
   menus: {
-    system: "系统管理", // 更具描述性的名称
-    monitor: "运行监控",
-    tool: "工具中心",
-    user: "用户信息",
-    peoples: "人员管理",
-    tree: "树形结构",
+    dashboard: "仪表盘",
+    education: "我的课程",
+    booksearch: "选课中心",
+
+    system: "系统管理", 
+    user: "用户管理",
+    peoples: "角色管理",
+    menu: "菜单管理",
+    tree: "部门管理",
+    // message: "消息通知",
     post: "岗位管理",
     dict: "数据字典",
     edit: "编辑内容",
-    message: "消息通知",
+    monitor: "运行监控",
+    question: "反馈中心",
+    code: "在线编程",
+    course: "课程管理",
+    checklist: "阅卷中心",
+    tool: "工具中心",
+    
     log: "日志记录",
     online: "在线用户",
     job: "任务调度",
@@ -28,16 +38,11 @@ const zh = {
     server: "服务器管理",
     redis: "缓存管理",
     build: "构建工具",
-    code: "代码生成",
     swagger: "接口文档",
     form: "表单设计",
     logininfor: "登录日志",
-    education: "我的课程",
-    checkbox: "复选框",
-    question: "问题管理",
     upload: "文件上传",
     textarea: "文本域",
-    dashboard: "仪表盘",
   },
 
   // 公共字段

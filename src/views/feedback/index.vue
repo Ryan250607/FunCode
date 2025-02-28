@@ -415,6 +415,7 @@ const handleUpdate = async (row?: Feedback) => {
 
     const response = await getFeedback(id);
     form.value = response.data;
+    form.value.attachment = response.data.attachment ?? '';
     open.value = true;
     title.value = "修改课程反馈";
   } catch (error) {

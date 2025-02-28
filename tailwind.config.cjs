@@ -18,6 +18,8 @@ module.exports = {
                     900: '#280567',
                 },
             },
+            backgroundImage: {
+            }
         },
     },
     plugins: [

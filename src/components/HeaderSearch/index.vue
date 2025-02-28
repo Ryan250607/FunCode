@@ -156,12 +156,14 @@ watch(searchPool, list => {
 
     .search-icon {
         cursor: pointer;
-        font-size: 18px;
+        font-size: 1.25rem /* 20px */;
+        line-height: 1.75rem /* 28px */;
         vertical-align: middle;
     }
 
     .header-search-select {
-        font-size: 18px;
+        font-size: 1.25rem /* 20px */;
+        line-height: 1.75rem /* 28px */;
         transition: width 0.2s;
         width: 0;
         overflow: hidden;

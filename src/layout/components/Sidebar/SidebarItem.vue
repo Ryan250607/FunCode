@@ -12,9 +12,9 @@
                     :index="resolvePath(onlyOneChild.path)"
                     :class="{ 'sub-menu-title-noDropdown': !isNest }"
                 >
-                    <svg-icon :icon-class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" />
+                    <svg-icon style="font-size: 14px;" :icon-class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" />
                     <template #title
-                        ><span class="menu-title" :title="hasTitle(onlyOneChild.meta.title)">{{
+                        ><span class="menu-title"  :title="hasTitle(onlyOneChild.meta.title)">{{
                             tanslateMenuTitle(onlyOneChild.meta.icon)
                         }}</span></template
                     >

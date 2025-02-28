@@ -20,9 +20,7 @@
     <div class="right-menu">
       <template v-if="appStore.device !== 'mobile'">
         <LanguageToggle />
-
         <header-search id="header-search" class="right-menu-item" />
-
         <!-- <el-tooltip content="源码地址" effect="dark" placement="bottom">
                     <ruo-yi-git id="ruoyi-git" class="right-menu-item hover-effect" />
                 </el-tooltip> -->
@@ -30,13 +28,12 @@
         <!-- <el-tooltip content="文档地址" effect="dark" placement="bottom">
                     <ruo-yi-doc id="ruoyi-doc" class="right-menu-item hover-effect" />
                 </el-tooltip> -->
-
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
-
         <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
+        <screenfull id="screenfull" class="right-menu-item hover-effect" />
       </template>
+
       <div class="avatar-container">
         <el-dropdown
           @command="handleCommand"
@@ -50,9 +47,7 @@
           <template #dropdown>
             <el-dropdown-menu>
               <router-link to="/user/profile">
-                <el-dropdown-item>{{
-                  $t("my_profile")
-                }}</el-dropdown-item>
+                <el-dropdown-item>{{ $t("my_profile") }}</el-dropdown-item>
               </router-link>
               <el-dropdown-item command="setLayout">
                 <span>{{ $t("layout_management") }}</span>
@@ -126,7 +121,7 @@ function setLayout() {
 <style lang="scss" scoped>
 .navbar {
   height: 50px;
-  overflow: hidden;
+  // overflow: hidden;
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
@@ -172,9 +167,13 @@ function setLayout() {
       display: inline-block;
       padding: 0 8px;
       height: 100%;
-      font-size: 18px;
+      font-size: 1.25rem /* 20px */;
+      line-height: 1.75rem /* 28px */;
       color: #5a5e66;
+      display: flex;
+      align-items: center;
       vertical-align: text-bottom;
+      opacity: 0.8;
 
       &.hover-effect {
         cursor: pointer;

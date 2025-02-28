@@ -1,23 +1,32 @@
 <template>
-  <div class="flex items-center">
-    <el-dropdown trigger="hover" placement="bottom" @command="confirmLang">
-      <div class="reference_btn">
-        <svg-icon icon-class="lang" class="text-xl" />
-        <!-- <span class="current_language">{{ current_language }}</span> -->
+  <div class="flex items-center relative">
+    <div
+      class="reference_btn"
+      @mouseenter="showDropdown = true"
+      @mouseleave="startHideTimer"
+    >
+      <svg-icon icon-class="lang" class="text-xl opacity-80" />
+    </div>
+
+    <div
+      v-show="showDropdown"
+      class="lang-dropdown-card absolute top-full right-0 mt-1 shadow-md"
+      style="z-index: 3000"
+      @mouseenter="clearHideTimer"
+      @mouseleave="startHideTimer"
+    >
+      <div class="justify-start p-1" style="width: 100%">
+        <div
+          v-for="item in langList"
+          :key="item.category"
+          class="lang-item flex items-center"
+          :class="{ 'is-selected': item.category === selectedLang }"
+          @click="confirmLang(item.category)"
+        >
+          <span class="text-xs">{{ item.lang }}</span>
+        </div>
       </div>
-      <template #dropdown>
-        <el-dropdown-menu class="ifFlagDropdown">
-          <el-dropdown-item
-            v-for="item in langList"
-            :key="item.category"
-            :command="item.category"
-            :class="{ 'is-selected': item.category === selectedLang }"
-          >
-            {{ item.lang }}
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </template>
-    </el-dropdown>
+    </div>
   </div>
 </template>
 
@@ -37,16 +46,29 @@ const langue = computed<string>(() => {
 });
 
 const selectedLang = ref<string>(langue.value);
-
-// const current_language = computed(() => {
-//   return langList.find((el) => el.category === selectedLang.value)?.lang || "English";
-// });
+const showDropdown = ref(false);
+let hideTimer: number | null = null;
 
 const confirmLang = (lang: string) => {
   selectedLang.value = lang;
   locale.value = lang;
   setLocalData(CACHE_KEY.LOCAL_LANG, lang);
+  showDropdown.value = false;
   router.go(0);
+};
+
+const startHideTimer = () => {
+  clearHideTimer();
+  hideTimer = setTimeout(() => {
+    showDropdown.value = false;
+  }, 200);
+};
+
+const clearHideTimer = () => {
+  if (hideTimer) {
+    clearTimeout(hideTimer);
+    hideTimer = null;
+  }
 };
 </script>
 
@@ -55,47 +77,62 @@ const confirmLang = (lang: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  padding: 6px 10px;
   cursor: pointer;
-  padding: 5px 8px;
+  transition: color 0.2s ease;
 
   &:hover {
-    color: #9b6bff; /* 浅紫色 */
+    color: #9b6bff;
   }
 }
 
-:deep(.ifFlagDropdown) {
-  width: 260px;
-  padding: 10px;
-  border-radius: 5px;
+.lang-dropdown-card {
+  min-width: 120px; // 增加最小宽度以容纳完整文字
+  border-radius: 8px;
+  background: #fff;
+  transform-origin: top right;
+  animation: fadeIn 0.2s ease;
 }
 
-:deep(.el-dropdown-menu__item) {
-  height: 25px;
-  line-height: 25px;
-  font-size: 12px;
-  padding: 0 15px;
+.lang-item {
+  height: 28px;
+  line-height: 28px;
+  padding: 0 12px;
+  border-radius: 4px;
   color: #333;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  margin: 5px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap; // 防止文字换行
+  width: 100%; // 确保占满卡片宽度
+  box-sizing: border-box; // 确保padding不影响宽度
 
   &:hover {
-    color: #9b6bff; /* 浅紫色 */
-    border: 1px solid #9b6bff23; /* 更浅的边框透明色 */
-    background-color: #9b6bff6b; /* 更浅的背景透明色 */
+    color: #9b6bff;
+    background-color: #f8f7ff;
   }
 
   &.is-selected {
-    border: 1px solid #9b6bff; /* 浅紫色 */
-    background-color: #9b6bff; /* 浅紫色 */
+    background-color: #9b6bff;
     color: #ffffff;
+    &:hover {
+      background-color: #8c5ce6;
+    }
+  }
+
+  span {
+    display: block; // 确保文字span占满父元素宽度
+    width: 100%;
   }
 }
 
-// @media screen and (max-width: 880px) {
-//   .current_language {
-//     display: none;
-//   }
-// }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>
