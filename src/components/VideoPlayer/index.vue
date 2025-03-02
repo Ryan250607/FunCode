@@ -31,6 +31,7 @@ let player: VideoJsPlayer | null = null;
 
 // 定义默认配置
 const defaultOptions: VideoJsPlayerOptions = {
+  playbackRates: [0.5, 1.0, 1.5, 2.0],
   autoplay: true, // 自动播放
   muted: false, // 不静音
   loop: false, // 不循环
@@ -53,6 +54,7 @@ const defaultOptions: VideoJsPlayerOptions = {
       { name: "currentTimeDisplay" }, // 当前已播放时间
       { name: "progressControl" }, // 播放进度条
       { name: "durationDisplay" }, // 总时间
+      { name: "timeDivider" }, // 总时间
       {
         // 倍数播放
         name: "playbackRateMenuButton",
@@ -61,6 +63,9 @@ const defaultOptions: VideoJsPlayerOptions = {
       {
         name: "volumePanel", // 音量控制
         inline: false, // 不使用水平方式
+      },
+      {
+        name: "fullscreenToggle", // 音量控制
       },
     ],
   },

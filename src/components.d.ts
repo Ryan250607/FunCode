@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Breadcrumb: typeof import('./components/Breadcrumb/index.vue')['default']
+    ChapterVideoList: typeof import('./components/ChapterVideoList/index.vue')['default']
     CodeEditor: typeof import('./components/CodeEditor.vue')['default']
     Crontab: typeof import('./components/Crontab/index.vue')['default']
     Day: typeof import('./components/Crontab/day.vue')['default']
@@ -90,7 +91,9 @@ declare module '@vue/runtime-core' {
     SvgIcon: typeof import('./components/SvgIcon/index.vue')['default']
     TopNav: typeof import('./components/TopNav/index.vue')['default']
     TreeSelect: typeof import('./components/TreeSelect/index.vue')['default']
+    VideoList: typeof import('./components/VideoPlayer/VideoList.vue')['default']
     VideoPlayer: typeof import('./components/VideoPlayer/index.vue')['default']
+    VideoPreview: typeof import('./components/VideoPlayer/VideoPreview.vue')['default']
     Week: typeof import('./components/Crontab/week.vue')['default']
     Year: typeof import('./components/Crontab/year.vue')['default']
   }

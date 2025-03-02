@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 
-export const upload = (data: any) => {
+export const uploadVideos = (data: any) => {
   return request({
     headers: {
       "Content-Type": "multipart/form-data",

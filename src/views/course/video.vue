@@ -10,7 +10,7 @@
           :on-progress="handleProgress"
           :on-success="handleSuccess"
           :before-upload="beforeUpload"
-          :limit="2"
+          :limit="5"
           :file-list="fileList"
         >
           <el-button type="primary">选择视频文件</el-button>

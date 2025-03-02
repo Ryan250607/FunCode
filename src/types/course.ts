@@ -3,7 +3,7 @@ export interface Course {
     id: number | string;
     title: string;
     difficulty: string;
-    coverImage: string;
+    coverImage?: string;
     totalChapters?: number;
     finishedChapters?: number;
   }

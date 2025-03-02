@@ -21,9 +21,9 @@
                 ? course.coverImage
                 : baseURL + course.coverImage
             "
-            class="w-full aspect-[16/9] object-cover rounded-t-lg"
+            class="w-full aspect-[4/3] object-cover rounded-t-lg"
           />
-          <div class="p-4">
+          <div class="py-2 px-2">
             <div class="flex items-center gap-2 mb-2">
               <div class="text-base font-bold text-gray-800 truncate">
                 {{ course.title }}
@@ -35,10 +35,7 @@
               class="w-full"
             />
             <div class="mt-3">
-              <el-button
-                class="w-full"
-                @click.stop="goCoding(course.id)"
-              >
+              <el-button class="w-full" @click.stop="goCoding(course.id)">
                 开始答题
               </el-button>
             </div>
@@ -71,45 +68,10 @@
           />
         </el-col>
         <el-col :span="6">
-          <div
-            style="
-              background: #f1f2f3;
-              padding: 16px;
-              border-radius: 4px;
-              height: 75vh;
-              overflow-y: auto;
-            "
-          >
-            <el-card
-              v-for="chapter in currentCourse?.chapters"
-              :key="chapter.id"
-              @click="viewChapterDetail(chapter)"
-              style="margin-bottom: 12px; cursor: pointer"
-              :body-style="{ padding: '12px' }"
-              :class="{ 'active-chapter': chapter.id === currentChapter?.id }"
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-around;
-                  align-items: center;
-                "
-              >
-                <div style="font-weight: 500; margin-bottom: 4px">
-                  {{ chapter.title }}
-                </div>
-                <div style="color: #666; font-size: 14px">
-                  {{ chapter.description }}
-                </div>
-                <div style="margin-bottom: 4px">
-                  <el-tag v-if="chapter.status === 1" type="success"
-                    >已完成</el-tag
-                  >
-                  <el-tag v-else type="info">未完成</el-tag>
-                </div>
-              </div>
-            </el-card>
-          </div>
+          <chapter-video-list
+            :chapters="currentCourse?.chapters || []"
+            :playerOptions="playerOptions"
+          />
         </el-col>
       </el-row>
     </el-dialog>
@@ -212,7 +174,6 @@ import {
   listFinished,
   listChaptersByCouseId,
 } from "@/api/funcode/chapters";
-import { listVideos, streamDownload } from "@/api/funcode/video";
 import type { Course, Chapter, FeedbackForm } from "@/types/index";
 import type { VideoJsPlayerOptions } from "video.js";
 import { Edit } from "@element-plus/icons-vue";
@@ -229,7 +190,7 @@ const currentCourse = ref<(Course & { chapters: Chapter[] }) | null>(null);
 const currentChapter = ref<Chapter | null>(null);
 const detailVisible = ref(false);
 const loading = ref(false);
-const baseURL = ref(import.meta.env.VUE_APP_BASE_API);
+const baseURL = ref(import.meta.env.VITE_APP_BASE_API);
 const dialogVisible = ref(false);
 const feedbackForm = ref<FeedbackForm>({ rating: 10 });
 const detailVisibleRef = ref<any>(null); // FadeDialog 的实例类型需根据实际调整
@@ -251,22 +212,7 @@ const rules = {
 
 // 默认播放器配置
 const playerOptions = ref<VideoJsPlayerOptions>({
-  playbackRates: [0.5, 1.0, 1.5, 2.0],
-  autoplay: true,
-  muted: false,
-  loop: false,
-  preload: "auto",
-  controls: true, // 启用控制栏
-  language: "zh-CN",
-  aspectRatio: "16:9",
   sources: [],
-  notSupportedMessage: "此视频暂无法播放，请稍后再试",
-  controlBar: {
-    timeDivider: true,
-    durationDisplay: true,
-    remainingTimeDisplay: false,
-    fullscreenToggle: true,
-  },
 });
 
 // 计算属性
@@ -332,31 +278,30 @@ async function viewDetail(course: Course) {
       difficulty: course.difficulty,
       chapters,
     };
-    if (chapters.length > 0) viewChapterDetail(chapters[0]);
+    // if (chapters.length > 0) viewChapterDetail(chapters[0]);
     detailVisible.value = true;
   } catch (error) {
     console.error("Failed to fetch course details:", error);
   }
 }
 
-async function viewChapterDetail(chapter: Chapter) {
-  currentChapter.value = chapter;
-  try {
-    const response = await listVideos({ chapterId: chapter.id });
-    if (response.rows?.length > 0) {
-      const videoUrl = response.rows[0].videoUrl;
-      playerOptions.value.sources = [
-        {
-          src: "/dev-api/" + videoUrl,
-          type: "application/x-mpegURL",
-        },
-      ];
-    }
-  } catch (error) {
-    console.error("加载视频失败:", error);
-    ElMessage.error("加载视频失败，请检查路径是否正确");
-  }
-}
+// async function viewChapterDetail(chapter: Chapter) {
+//   currentChapter.value = chapter;
+//   try {
+//     const response = await listVideos({ chapterId: chapter.id });
+//     if (response.rows?.length > 0) {
+//       // 存储所有视频到 videoList
+//       videoList.value = response.rows;
+//     } else {
+//       videoList.value = []; // 没有视频时清空列表
+//       playerOptions.value.sources = []; // 清空播放器源
+//     }
+//   } catch (error) {
+//     console.error("加载视频失败:", error);
+//     ElMessage.error("加载视频失败，请检查路径是否正确");
+//   }
+// }
+
 
 async function handleVideoEnded(chapter: Chapter | null) {
   if (!chapter) return;
@@ -429,6 +374,4 @@ onUnmounted(() => {});
 .active-chapter {
   background-color: #e3b63e !important;
 }
-
-
 </style>

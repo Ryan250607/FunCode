@@ -123,6 +123,9 @@ const en = {
   light: "Light",
   dark: "Dark",
   Theme_Mode: "Theme Mode",
+
+  // 视频相关
+  video_upload_title:"Upload"
 };
 
 export default en;
