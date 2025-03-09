@@ -76,6 +76,11 @@ export const constantRoutes: RouteRecordRaw[] = [
         hidden: true,
     },
     {
+        path: '/problems/:id/description',
+        component: () => import('@/views/coding/home.vue'),
+        hidden: true,
+    },
+    {
         path: '',
         component: Layout,
         redirect: '/index',

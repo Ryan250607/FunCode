@@ -43,6 +43,7 @@ const en = {
     logininfor: "Login Logs",
     upload: "File Upload",
     textarea: "Textarea",
+    trophy: "Questions",
   },
 
   // 公共字段

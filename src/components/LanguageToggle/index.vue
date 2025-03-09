@@ -37,7 +37,7 @@ import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import CACHE_KEY from "@/constants/cache-key";
 import { getLocalData, setLocalData } from "@/utils/cache/local-storage";
-
+import {changeLanguage} from "@/api/system/lang"
 const { locale } = useI18n();
 const router = useRouter();
 
@@ -49,12 +49,13 @@ const selectedLang = ref<string>(langue.value);
 const showDropdown = ref(false);
 let hideTimer: number | null = null;
 
-const confirmLang = (lang: string) => {
+const confirmLang = async (lang: string) => {
   selectedLang.value = lang;
   locale.value = lang;
   setLocalData(CACHE_KEY.LOCAL_LANG, lang);
+  await changeLanguage({lang})
   showDropdown.value = false;
-  router.go(0);
+   router.go(0);
 };
 
 const startHideTimer = () => {

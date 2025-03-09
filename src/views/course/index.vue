@@ -34,11 +34,11 @@
               :percentage="calculatePercentage(course)"
               class="w-full"
             />
-            <div class="mt-3">
+            <!-- <div class="mt-3">
               <el-button class="w-full" @click.stop="goCoding(course.id)">
                 开始答题
               </el-button>
-            </div>
+            </div> -->
           </div>
         </div>
       </el-col>

@@ -1,5 +1,6 @@
+<!-- src/views/Home.vue -->
 <template>
-  <div style="padding: 20px 20px 0">
+  <div class="px-5 pt-5 pb-0">
     <!-- 课程列表 -->
     <el-row :gutter="20" justify="start">
       <el-col
@@ -9,11 +10,10 @@
         :sm="12"
         :md="8"
         :lg="6"
+        class="mb-2"
       >
-        <el-card
-          :body-style="{ padding: '16px' }"
-          shadow="hover"
-          style="height: 320px"
+        <div
+          class="bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg overflow-hidden cursor-pointer"
         >
           <el-image
             :src="
@@ -21,36 +21,20 @@
                 ? course.coverImage
                 : baseURL + course.coverImage
             "
-            style="
-              width: 100%;
-              height: 150px;
-              object-fit: cover;
-              border-radius: 4px;
-              margin-bottom: 12px;
-            "
+            class="w-full aspect-[4/3] object-cover rounded-t-lg"
           ></el-image>
-          <div
-            style="
-              display: flex;
-              flex-direction: column;
-              gap: 8px;
-              height: 100px;
-            "
-          >
-            <div style="display: flex; align-items: center; gap: 8px">
-              <h3 style="font-size: 16px; margin: 0; line-height: 1.4">
+          <div class="flex flex-col p-2">
+            <div class="flex items-center gap-2 mb-2">
+              <h3 class="text-base font-bold text-gray-800 truncate">
                 {{ course.title }}
               </h3>
-              <dict-tag
-                  :options="difficult_value"
-                  :value="course.difficulty"
-                />
+              <dict-tag :options="difficult_value" :value="course.difficulty" />
             </div>
-            <div style="margin-top: auto">
+            <div class="mt-auto">
               <el-button
                 v-if="!isCourseSelected(course.id)"
                 type="primary"
-                style="width: 100%"
+                class="w-full"
                 @click="selectCourse(course.id)"
               >
                 选课
@@ -58,31 +42,39 @@
               <el-button
                 v-else
                 type="danger"
-                style="width: 100%"
+                class="w-full"
                 @click="cancelCourse(course.id)"
               >
                 退选
               </el-button>
             </div>
           </div>
-        </el-card>
+        </div>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted,getCurrentInstance, ComponentInternalInstance } from "vue";
+import {
+  ref,
+  onMounted,
+  getCurrentInstance,
+  type ComponentInternalInstance,
+} from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
   listCourses,
   fetchUserCourses,
-  selectCourse,
+  selectCourse as apiSelectCourse,
   deleteCourse,
 } from "@/api/funcode/courses";
 import { isHttp } from "@/utils/validate";
+
+// 获取字典数据
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
-const { difficult_value, feedback_type } = proxy!.useDict('difficult_value', 'feedback_type');
+const { difficult_value } = proxy!.useDict("difficult_value", "feedback_type");
+
 // 定义课程类型
 interface Course {
   id: number;
@@ -96,8 +88,6 @@ interface QueryParams {
   pageNum: number;
   pageSize: number;
 }
-
-// 使用 Pinia 存储字典数据
 
 // 定义响应式数据
 const courses = ref<Course[]>([]);
@@ -133,7 +123,7 @@ const fetchUserCoursesData = async () => {
 // 选课
 const selectCourse = async (courseId: number) => {
   try {
-    await selectCourse({ courseId });
+    await apiSelectCourse({ courseId });
     ElMessage.success("选课成功！");
     selectedCourseIds.value.push(courseId);
   } catch (error) {

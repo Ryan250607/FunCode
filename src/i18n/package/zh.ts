@@ -43,6 +43,7 @@ const zh = {
     logininfor: "登录日志",
     upload: "文件上传",
     textarea: "文本域",
+    trophy: "题库",
   },
 
   // 公共字段
