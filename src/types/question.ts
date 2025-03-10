@@ -74,3 +74,41 @@ export interface SubmissionRequest {
   language: string;
   code: string;
 }
+
+// 评判状态类型
+export type JudgeStatus = 
+  | 'ACCEPTED'
+  | 'WRONG_ANSWER'
+  | 'COMPILATION_ERROR'
+  | 'RUNTIME_ERROR'
+  | 'TIME_LIMIT_EXCEEDED'
+  | 'MEMORY_LIMIT_EXCEEDED';
+
+// 提交记录接口
+export interface SubmitRecord {
+  id: string | number;
+  problemId: string | number;
+  title: string;
+  code: string;
+  language: string;
+  judgeStatus: JudgeStatus;
+  executionTime: number | null;
+  memoryUsed: number | null;
+  errorMessage: string | null;
+  submitTime: string;
+}
+
+// 查询参数接口
+export interface QueryParams {
+  pageNum: number;
+  pageSize: number;
+  problemId?: string | number;
+  judgeStatus?: string;
+  language?: string;
+}
+
+// API 响应接口
+export interface ListResponse {
+  rows: SubmitRecord[];
+  total: number;
+}

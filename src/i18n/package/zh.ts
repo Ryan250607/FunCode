@@ -44,6 +44,7 @@ const zh = {
     upload: "文件上传",
     textarea: "文本域",
     trophy: "题库",
+    submit: "我的提交",
   },
 
   // 公共字段

@@ -28,7 +28,7 @@
               <div class="text-base font-bold text-gray-800 truncate">
                 {{ course.title }}
               </div>
-              <dict-tag :options="difficult_value" :value="course.difficulty" />
+              <DifficultyTag :level="course.difficulty" />
             </div>
             <el-progress
               :percentage="calculatePercentage(course)"
@@ -53,11 +53,12 @@
     >
       <div style="display: flex; align-items: center">
         <div class="text-lg font-bold">{{ currentCourse?.title }}</div>
-        <dict-tag
+        <!-- <dict-tag
           style="margin-left: 10px"
           :options="difficult_value"
           :value="currentCourse?.difficulty"
-        />
+        /> -->
+        <DifficultyTag :level="currentCourse?.difficulty" />
       </div>
       <el-row :gutter="20">
         <el-col :span="18">

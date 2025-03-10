@@ -17,16 +17,7 @@
               active-text="仅显示未解决"
               @change="handleFilterChange"
             />
-            <el-select
-              v-model="sortBy"
-              placeholder="排序方式"
-              @change="handleFilterChange"
-            >
-              <el-option label="默认排序" value="default" />
-              <el-option label="难度升序" value="difficultyAsc" />
-              <el-option label="难度降序" value="difficultyDesc" />
-              <el-option label="最新添加" value="newest" />
-            </el-select>
+           
           </el-space>
         </div>
       </template>
@@ -39,11 +30,11 @@
         :header-cell-style="{ background: '#f5f7fa' }"
         @row-click="navigateToQuestion"
       >
-        <el-table-column label="状态" width="60" align="center">
-          <template #default="{ row }">
+        <!-- <el-table-column label="状态" width="60" align="center">
+          <template #default="{ row }"> -->
             <!-- <QuestionStatusTag :status="row.status" /> -->
-          </template>
-        </el-table-column>
+          <!-- </template> -->
+        <!-- </el-table-column> -->
 
         <el-table-column label="题号" prop="id" width="80" align="center" />
 
@@ -57,18 +48,18 @@
 
         <el-table-column label="难度" width="100" align="center">
           <template #default="{ row }">
-            <!-- <DifficultyTag :level="row.difficulty" /> -->
-          </template>
+            <DifficultyTag :level="row.difficulty" />
+          </template> 
         </el-table-column>
 
-        <el-table-column
+        <!-- <el-table-column
           label="通过率"
           prop="acceptRate"
           width="100"
           align="center"
         >
           <template #default="{ row }"> {{ row.acceptRate }}% </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
 
       <!-- 分页组件 -->
@@ -77,7 +68,7 @@
           v-model:current-page="currentPage"
           v-model:page-size="pageSize"
           :page-sizes="[10, 20, 50, 100]"
-          layout="total, sizes, prev, pager, next, jumper"
+          layout=" sizes, prev, pager, next"
           :total="totalQuestions"
           @size-change="handlePageSizeChange"
           @current-change="fetchQuestionList"
@@ -92,7 +83,6 @@ import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 // import { useQuestionStore } from '@/stores/question';
 // import QuestionStatusTag from './components/QuestionStatusTag.vue';
-// import DifficultyTag from './components/DifficultyTag.vue';
 import { listQuestions } from "@/api/funcode/questions";
 import type { Question } from "@/types";
 
@@ -107,7 +97,6 @@ const totalQuestions = ref(0);
 const currentPage = ref(1);
 const pageSize = ref(20);
 const onlyShowUnsolved = ref(false);
-const sortBy = ref("default");
 
 // 过滤器状态
 const filters = reactive<QuestionFilter>({
@@ -129,7 +118,6 @@ const fetchQuestionList = async () => {
       page: currentPage.value,
       pageSize: pageSize.value,
       onlyUnsolved: onlyShowUnsolved.value,
-      sortBy: sortBy.value,
       ...filters,
     };
 
@@ -203,8 +191,6 @@ const handleViewSolution = (question: Question) => {
 }
 
 .pagination-container {
-  margin-top: 16px;
-  display: flex;
-  justify-content: flex-end;
+  position: relative;
 }
 </style>

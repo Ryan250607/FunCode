@@ -84,7 +84,7 @@
       <el-table-column label="序号" align="center" prop="id" />
       <el-table-column label="题目标题" align="center" prop="title" />
       <el-table-column label="题目描述" align="center" prop="description" />
-      <el-table-column label="时间限制(秒)" align="center" prop="timeLimit" />
+      <el-table-column label="运行时间限制" align="center" prop="timeLimit" />
 
       <el-table-column
         label="操作"
@@ -148,8 +148,8 @@
             placeholder="请输入内容"
           />
         </el-form-item>
-        <el-form-item label="时间限制(秒)" prop="timeLimit">
-          <el-input v-model="form.timeLimit" placeholder="请输入时间限制(秒)" />
+        <el-form-item label="运行时间限制" prop="timeLimit">
+          <el-input v-model="form.timeLimit" placeholder="运行时间限制" />
         </el-form-item>
       </el-form>
       <template #footer>

@@ -28,7 +28,7 @@
               <h3 class="text-base font-bold text-gray-800 truncate">
                 {{ course.title }}
               </h3>
-              <dict-tag :options="difficult_value" :value="course.difficulty" />
+              <DifficultyTag :level="course.difficulty" />
             </div>
             <div class="mt-auto">
               <el-button

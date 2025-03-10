@@ -44,6 +44,7 @@ const en = {
     upload: "File Upload",
     textarea: "Textarea",
     trophy: "Questions",
+    submit: "Submit",
   },
 
   // 公共字段
