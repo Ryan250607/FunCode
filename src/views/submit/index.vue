@@ -1,22 +1,21 @@
 <template>
   <div class="app-container">
     <!-- 搜索区域 -->
-    <el-card class="search-card" shadow="never">
+    <div class="search-card" shadow="never">
       <el-form
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
         size="default"
       >
-        <el-form-item label="题目ID" prop="problemId">
+        <el-form-item label="题目ID" prop="questionId">
           <el-input
-            v-model="queryParams.problemId"
+            v-model="queryParams.questionId"
             placeholder="请输入题目ID"
-            clearable
             @keyup.enter="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="评判状态" prop="judgeStatus">
+        <el-form-item label="评判状态" prop="judgeStatus" class="w-40">
           <el-select
             v-model="queryParams.judgeStatus"
             placeholder="请选择评判状态"
@@ -30,7 +29,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="编程语言" prop="language">
+        <el-form-item label="编程语言" prop="language" class="w-40">
           <el-select
             v-model="queryParams.language"
             placeholder="请选择编程语言"
@@ -53,18 +52,18 @@
           </el-button>
         </el-form-item>
       </el-form>
-    </el-card>
+    </div>
 
     <!-- 提交列表 -->
     <el-card class="table-card" shadow="never">
       <template #header>
         <div class="card-header">
           <span class="header-title">提交记录</span>
-          <div class="header-options">
+          <!-- <div class="header-options">
             <el-tooltip content="刷新数据" placement="top">
               <el-button :icon="Refresh" circle @click="getSubmitList" />
             </el-tooltip>
-          </div>
+          </div> -->
         </div>
       </template>
 
@@ -187,7 +186,7 @@
             currentSubmit.id
           }}</el-descriptions-item>
           <el-descriptions-item label="题目ID">{{
-            currentSubmit.problemId
+            currentSubmit.questionId
           }}</el-descriptions-item>
           <el-descriptions-item label="题目标题">{{
             currentSubmit.title
@@ -213,7 +212,7 @@
             }}
           </el-descriptions-item>
           <el-descriptions-item label="提交时间">
-            {{ parseTime(currentSubmit.submitTime) }}
+            {{ parseTime(currentSubmit.createdAt) }}
           </el-descriptions-item>
         </el-descriptions>
 
@@ -225,7 +224,7 @@
         <div class="code-section">
           <h4>提交的代码：</h4>
           <code-viewer
-            :code="currentSubmit.code"
+            :code="currentSubmit.answerCode"
             :language="currentSubmit.language"
           />
         </div>
@@ -244,7 +243,7 @@ import type { SubmitRecord, QueryParams, JudgeStatus } from "@/types";
 const queryParams = reactive<QueryParams>({
   pageNum: 1,
   pageSize: 10,
-  problemId: "",
+  questionId: "",
   judgeStatus: "",
   language: "",
 });
@@ -321,7 +320,7 @@ const viewSubmitDetail = (row: SubmitRecord) => {
 }
 
 .search-card {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .table-card {

@@ -1,20 +1,31 @@
 <template>
   <div class="coding-container">
-    <el-row :gutter="16" class="full-height">
+    <!-- 顶部导航栏 -->
+    <div class="top-navigation">
+      <div>
+        <el-button 
+          type="primary" 
+          :icon="Back" 
+          plain 
+          @click="handleBack"
+        >
+          返回
+        </el-button>
+      </div>
+      <div class="nav-right"><el-button
+        type="primary"
+        :loading="isSubmitting"
+        @click="handleSubmit"
+        :icon="UploadFilled"
+      >
+        提交代码
+      </el-button></div>
+    </div>
+    
+    <el-row :gutter="16" class="content-area">
       <!-- 左侧题目描述和测试用例 -->
       <el-col :span="10" class="full-height">
         <el-card class="problem-card full-height" shadow="never">
-          <div class="problem-toolbar">
-            <el-button
-              type="text"
-              plain
-              size="small"
-              @click="$router.push('/questions/home')"
-            >
-              返回
-            </el-button>
-          </div>
-
           <el-tabs v-model="activeTab" class="description-tabs">
             <el-tab-pane label="题目描述" name="description">
               <div class="problem-header">
@@ -31,27 +42,28 @@
               </div>
             </el-tab-pane>
 
-            <!-- <el-tab-pane label="测试用例" name="examples">
-          <div class="examples-container">
-            <div v-for="(example, index) in problem.examples" :key="index" class="example-item">
-            <h4>示例 {{ index + 1 }}</h4>
-            <div class="example-content">
-              <div class="example-input">
-                <strong>输入：</strong>
-                <pre>{{ example.input }}</pre>
+            <el-tab-pane label="测试用例" name="examples">
+              <div class="examples-container">
+                <div v-for="(example, index) in problem.examples" :key="index" class="example-item">
+                  <h4>示例 {{ index + 1 }}</h4>
+                  <div class="example-content">
+                    <div class="example-input">
+                      <strong>输入：</strong>
+                      <pre>{{ example.input }}</pre>
+                    </div>
+                    <div class="example-output">
+                      <strong>输出：</strong>
+                      <pre>{{ example.output }}</pre>
+                    </div>
+                    <div v-if="example.explanation" class="example-explanation">
+                      <strong>解释：</strong>
+                      <p>{{ example.explanation }}</p>
+                    </div>
+                  </div>
+                </div>
+                <el-empty v-if="!problem.examples?.length" description="暂无测试用例" />
               </div>
-              <div class="example-output">
-                <strong>输出：</strong>
-                <pre>{{ example.output }}</pre>
-              </div>
-              <div v-if="example.explanation" class="example-explanation">
-                <strong>解释：</strong>
-                <p>{{ example.explanation }}</p>
-              </div>
-            </div>
-            </div>
-          </div>
-        </el-tab-pane> -->
+            </el-tab-pane>
           </el-tabs>
         </el-card>
       </el-col>
@@ -74,14 +86,7 @@
               />
             </el-select>
 
-            <el-button
-              type="primary"
-              :loading="isSubmitting"
-              @click="handleSubmit"
-              :icon="UploadFilled"
-            >
-              提交代码
-            </el-button>
+            
           </div>
 
           <div class="code-editor-wrapper">
@@ -107,8 +112,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from "vue";
-import { useRoute } from "vue-router";
-import { UploadFilled } from "@element-plus/icons-vue";
+import { useRoute, useRouter } from "vue-router";
+import { UploadFilled, Back, View, DataAnalysis } from "@element-plus/icons-vue";
 import { getQuestions } from "@/api/funcode/questions";
 import { run } from "@/api/funcode/execution";
 import type {
@@ -119,11 +124,13 @@ import type {
 } from "@/types";
 import useUserStore from "@/store/modules/user";
 
-// 路由参数
+// 路由相关
 const route = useRoute();
+const router = useRouter();
 const problemId = computed(() => route.params.id as string);
 
 // 状态管理
+const userStore = useUserStore();
 
 // 基础数据
 const activeTab = ref("description");
@@ -141,7 +148,7 @@ const problem = ref<Problem>({
 });
 const submissionResult = ref<SubmissionResult | null>(null);
 const submissionStatus = ref<SubmissionStatus>("idle");
-const userStore = useUserStore();
+
 // 支持的编程语言
 const supportedLanguages = [
   { label: "Java", value: "java" },
@@ -152,27 +159,50 @@ const supportedLanguages = [
 // 初始化加载题目详情
 onMounted(async () => {
   if (problemId.value) {
-    try {
-      const { data } = await getQuestions(problemId.value);
-      problem.value = data;
-
-      code.value = problem.value.initialCode;
-    } catch (error) {
-      console.error("获取题目详情失败:", error);
-    }
+    await loadProblemData();
   }
 });
+
+// 加载题目数据
+const loadProblemData = async () => {
+  try {
+    const { data } = await getQuestions(problemId.value);
+    problem.value = data;
+
+    // 设置初始代码
+    if (problem.value.templates && problem.value.templates[selectedLanguage.value]) {
+      code.value = problem.value.templates[selectedLanguage.value];
+    } else if (problem.value.initialCode) {
+      code.value = problem.value.initialCode;
+    } else {
+      setDefaultCodeTemplate();
+    }
+  } catch (error) {
+    console.error("获取题目详情失败:", error);
+  }
+};
 
 // 监听语言变化，加载对应模板
 watch(selectedLanguage, (newLang) => {
   if (problem.value.templates && problem.value.templates[newLang]) {
-    // 如果没有本地存储的代码，则使用题目提供的模板
     code.value = problem.value.templates[newLang];
   } else {
-    // 如果没有模板，则清空代码区
-    code.value = "";
+    setDefaultCodeTemplate();
   }
 });
+
+// 设置默认代码模板
+const setDefaultCodeTemplate = () => {
+  const lang = selectedLanguage.value;
+  
+  if (lang === "java") {
+    code.value = `public class Solution {\n    public static void main(String[] args) {\n        // 您的代码\n    }\n}`;
+  } else if (lang === "python") {
+    code.value = `def solution():\n    # 您的代码\n    pass\n\nif __name__ == "__main__":\n    solution()`;
+  } else if (lang === "c") {
+    code.value = `#include <stdio.h>\n\nint main() {\n    // 您的代码\n    return 0;\n}`;
+  }
+};
 
 // 提交代码
 const handleSubmit = async () => {
@@ -194,10 +224,7 @@ const handleSubmit = async () => {
 
     submissionResult.value = result;
     submissionStatus.value = result.status;
-
-    // 如果通过了测试，标记为完成
-    // if (result.status === "accepted") {
-    // }
+    router.push(`/submit`);
   } catch (error) {
     console.error("提交代码失败:", error);
     submissionStatus.value = "error";
@@ -212,12 +239,49 @@ const handleSubmit = async () => {
     isSubmitting.value = false;
   }
 };
+
+// 返回上一页
+const handleBack = () => {
+  router.back();
+};
+
+// 查看题解
+const handleViewSolution = () => {
+  activeTab.value = "solution";
+};
+
+// 查看提交记录
+const handleViewSubmissions = () => {
+  router.push(`/submit?problemId=${problemId.value}`);
+};
 </script>
 
 <style scoped>
 .coding-container {
-  height: calc(100vh);
-  padding: 16px;
+  height: calc(100vh - 20px);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+
+
+.nav-center {
+  display: flex;
+  justify-content: center;
+}
+
+.content-area {
+  flex: 1;
+  min-height: 0;
 }
 
 .full-height {
@@ -326,6 +390,12 @@ const handleSubmit = async () => {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   overflow: hidden;
+}
+
+.no-solution {
+  padding: 20px;
+  text-align: center;
+  color: #909399;
 }
 
 :deep(.el-tabs__content) {

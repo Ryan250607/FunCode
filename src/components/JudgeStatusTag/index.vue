@@ -31,7 +31,7 @@ const tagEffect = computed(() => {
 
 const statusText = computed(() => {
   const textMap: Record<string, string> = {
-    ACCEPTED: '评判通过',
+    ACCEPTED: '答案正确',
     WRONG_ANSWER: '答案错误',
     COMPILATION_ERROR: '编译错误',
     RUNTIME_ERROR: '运行时错误',
@@ -42,3 +42,11 @@ const statusText = computed(() => {
   return textMap[props.status] || '未知状态';
 });
 </script>
+<style scoped>
+  .el-tag{
+    font-size: 14px;
+  }
+  .el-tag--success {
+    background-color: #74b666;
+  }
+</style>

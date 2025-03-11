@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from "vue";
 
 const props = defineProps<{
   language: string;
@@ -16,21 +16,21 @@ const props = defineProps<{
 
 const tagType = computed(() => {
   const typeMap: Record<string, string> = {
-    java: 'primary',
-    python: 'success',
-    c: 'info',
+    java: "primary",
+    python: "success",
+    c: "info",
   };
-  
-  return typeMap[props.language.toLowerCase()] || 'info';
+
+  return typeMap[props.language.toLowerCase()] || "info";
 });
 
 const languageText = computed(() => {
   const textMap: Record<string, string> = {
-    java: 'Java',
-    python: 'Python',
-    c: 'C',
+    java: "Java",
+    python: "Python",
+    c: "C",
   };
-  
+
   return textMap[props.language.toLowerCase()] || props.language;
 });
 
@@ -40,7 +40,7 @@ const languageText = computed(() => {
 //     python: Document,
 //     c: Document,
 //   };
-  
+
 //   return iconMap[props.language.toLowerCase()] || null;
 // });
 </script>
@@ -49,5 +49,8 @@ const languageText = computed(() => {
 .language-icon {
   margin-right: 4px;
   vertical-align: middle;
+}
+.el-tag {
+  font-size: 14px;
 }
 </style>
