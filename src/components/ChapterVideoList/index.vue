@@ -35,7 +35,7 @@
                   : 'text-gray-600 hover:text-blue-500',
               ]"
             >
-              {{ video.videoUrl.split("/").pop() }}
+              {{ video.videoTitle.replace(/\.mp4$/, '') }}
             </div>
           </div>
         </div>
@@ -90,8 +90,8 @@
       selectedVideo.value = video; // 标记当前选中的视频
       props.playerOptions.sources = [
         {
-          src: "/dev-api/" + video.videoUrl,
-          type: "application/x-mpegURL",
+          src:  video.videoUrl,
+          type: "video/mp4",
         },
       ];
     } else {

@@ -23,7 +23,7 @@ const service = axios.create({
   // axios中请求配置有baseURL选项，表示请求URL公共部分
   baseURL: import.meta.env.VITE_APP_BASE_API,
   // 超时
-  timeout: 20000,
+  timeout: 10000,
   headers: {
     "Content-Type": "application/json;charset=utf-8",
   },
@@ -143,10 +143,11 @@ service.interceptors.response.use(
       });
       return Promise.reject(new Error(msg));
     } else if (code !== 200) {
-      ElNotification.error({
-        title: msg,
-      });
-      return Promise.reject("error");
+      // ElNotification.error({
+      //   title: msg,
+      // });
+      // return Promise.reject("error");
+      return Promise.resolve(res.data);
     } else {
       return Promise.resolve(res.data);
     }

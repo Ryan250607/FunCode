@@ -29,7 +29,6 @@
           >新增</el-button
         >
       </el-col>
-
       <el-col :span="1.5">
         <el-button
           type="success"
@@ -62,7 +61,6 @@
       v-loading="loading"
       :data="chaptersList"
       @selection-change="handleSelectionChange"
-      @row-click="viewChapterDetail"
     >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="章节标题" align="center" prop="title" />
@@ -130,124 +128,33 @@
         </div>
       </template>
     </el-dialog>
-    <!--视频上传-->
-    <el-dialog
+
+    <!-- 视频上传 -->
+    <!-- <el-dialog
       :title="t('video_upload_title')"
       v-model="videoOpen"
       width="500px"
       append-to-body
       fullscreen
     >
-      <el-upload
-        ref="uploadRef"
-        class="upload-demo"
-        :auto-upload="false"
-        :on-progress="handleProgress"
-        :on-change="handleFileChange"
-        :limit="5"
-        drag
-        multiple
-        :file-list="fileList"
-      >
-        <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-        <!-- <el-button type="primary">选择视频文件</el-button> -->
-        <div class="el-upload__text">
-          Drop file here or <em>click to upload</em>
-        </div>
-        <template #tip>
-          <div class="el-upload__tip">
-            mp4 files with a size less than 500kb
-          </div>
-        </template>
-        <template #file="{ file }">
-          <div
-            class="w-40 custom-file-item relative cursor-pointer p-3 border border-gray-200 rounded-lg bg-white mb-2"
-            @click="selectFile(file)"
-            :class="[
-              selectedFile === file
-                ? ['bg-primary-100', 'text-white', 'bg-opacity-80']
-                : [],
-            ]"
-          >
-            <!-- 文件名称 -->
-            <span class="file-name block mb-2 truncate">
-              {{ file.name }}
-            </span>
-
-            <!-- 上传进度条 -->
-            <div
-              v-if="file.status === 'uploading'"
-              class="w-full bg-gray-200 rounded-full h-2"
-            >
-              <div
-                class="bg-primary h-2 rounded-full"
-                :style="{ width: file.percentage + '%' }"
-              ></div>
-            </div>
-            <div class="flex items-center">
-              <el-icon><SuccessFilled /></el-icon>
-              <!-- 上传状态 -->
-              <span class="file-status">
-                {{ getStatusText(file.status) }}
-              </span>
-            </div>
-            <div
-              v-if="selectedFile === file"
-              class="absolute top-1 right-1"
-              @click.stop="handleVideoDelete(file)"
-            >
-              <svg-icon :icon-class="'delete'" class="opacity-90" />
-            </div>
-          </div>
-        </template>
-      </el-upload>
-      <!-- 单独的上传进度显示区域 -->
-      <div
-        v-if="selectedFile"
-        class="progress-display mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50"
-      >
-        <div class="text-sm text-gray-700 mb-2">
-          {{ selectedFile.name }}
-        </div>
-        <div
-          v-if="selectedFile.status === 'uploading'"
-          class="w-full bg-gray-200 rounded-full h-2"
-        >
-          <div
-            class="bg-primary h-2 rounded-full"
-            :style="{ width: selectedFile.percentage + '%' }"
-          ></div>
-        </div>
-        <div class="text-xs mt-1">
-          状态：{{ getStatusText(selectedFile.status) }}
-        </div>
-      </div>
-      <div>
-        <el-button type="primary" @click="startUpload">开始上传</el-button>
-      </div>
-      <!-- <VideoList
-        :videos="fileList"
-        @delete="handleVideoDelete"
-        @preview="handlePreview"
-      />
-      <VideoPreview
-        :visible="previewVisible"
-        :videoUrl="previewUrl"
-        @close="handleClosePreview"
-      /> -->
-      <!-- </el-form> -->
+      
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="submitVideoForm">确定</el-button>
           <el-button @click="videoCancel">取消</el-button>
         </div>
       </template>
-    </el-dialog>
+    </el-dialog> -->
+    <upload-chunk
+        v-model="videoOpen"
+        @success="handleUploadSuccess"
+        :existing-videos="existingVideos"
+      />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeMount, nextTick } from "vue";
+import { ref, onMounted, onBeforeMount } from "vue";
 import { ElMessageBox, ElMessage, FormInstance } from "element-plus";
 import { useRoute, useRouter } from "vue-router";
 import {
@@ -257,17 +164,11 @@ import {
   addChapters,
   updateChapters,
 } from "@/api/funcode/chapters";
-import type { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
-import {
-  uploadVideos,
-  addVideos,
-  listVideos,
-  updateVideos,
-} from "@/api/funcode/video";
+import {  listVideos,replaceChapterVideos } from "@/api/funcode/video";
 import { useI18n } from "vue-i18n";
-import type { UploadInstance } from "element-plus";
-const { t } = useI18n();
 
+const { t } = useI18n();
+const existingVideos = ref<Array<{ name: string; url: string; chapterId?: number }>>([]);
 // 类型定义
 interface Chapter {
   id?: number;
@@ -286,15 +187,18 @@ interface QueryParams {
   title?: string | null;
   description?: string | null;
 }
+
 interface UploadFile {
   chapterId?: string | number;
   url?: string;
   duration?: number;
   status?: string;
-  name?: string
-  uid?: string
+  name?: string;
+  uid?: string;
+  percentage?: number;
+  raw?: File;
 }
-//
+
 interface Video {
   id?: number;
   chapterId?: string | number;
@@ -302,6 +206,7 @@ interface Video {
   fileName?: string;
   duration?: number;
 }
+
 interface UploadResponse {
   chapterId?: string | number;
   videoTitle?: string;
@@ -331,10 +236,10 @@ const queryParams = ref<QueryParams>({
   description: null,
 });
 const form = ref<Chapter>({
-  courseId: courseId.value, // 初始化时赋值
+  courseId: courseId.value,
 });
 const formRef = ref<FormInstance | null>(null);
-
+const chapterId = ref(null);
 // 表单校验规则
 const rules = ref({
   title: [{ required: true, message: "章节标题不能为空", trigger: "blur" }],
@@ -342,25 +247,15 @@ const rules = ref({
     { required: true, message: "章节排序不能为空", trigger: "blur" },
   ],
 });
-//视频上传
-const fileList = ref<UploadFile[]>([]);
-const existingVideo = ref<Video | null>(null);
-const progress = ref(0);
-const uploading = ref(false);
-const uploadSuccess = ref(false);
-const videoUrl = ref<string>(""); // HLS 视频 URL
-// Video.js 配置
 
-const selectedFile = ref(null); // 当前选中的文件
-const videoResponse = ref<UploadResponse | null>(null);
-const uploadRef = ref<UploadInstance>();
-// 方法
-const viewChapterDetail = (chapter: Chapter) => {
-  router.push({
-    path: "/courses/chapters/video",
-    query: { chapterId: chapter.id?.toString() },
-  });
-};
+// 视频上传相关
+// const fileList = ref<UploadFile[]>([]);
+// const existingVideo = ref<Video | null>(null);
+// const videoUrl = ref<string>("");
+// const selectedFile = ref<UploadFile | null>(null);
+const videoResponse = ref<UploadResponse[] | null>(null);
+// const uploading = ref(false);
+
 
 const getList = async () => {
   try {
@@ -379,16 +274,16 @@ const cancel = () => {
   open.value = false;
   reset();
 };
+
 const videoCancel = () => {
   videoOpen.value = false;
-  // reset();
 };
 
 const reset = () => {
   form.value = {
     id: undefined,
     title: undefined,
-    courseId: courseId.value, // 保持 courseId 不变
+    courseId: courseId.value,
     description: undefined,
     chaptersOrder: undefined,
     createdAt: undefined,
@@ -444,27 +339,25 @@ const fetchExistingVideo = async (chapterId: number) => {
   try {
     const response = await listVideos({ chapterId });
     if (response.rows && response.rows.length > 0) {
-      existingVideo.value = response.rows; // 修改为存储全部 rows
-      videoUrl.value = response.rows.map(row => row.videoUrl || ""); // 将所有 videoUrl 存为数组
-
-      // 清空 fileList 并添加所有已有视频
-      fileList.value = [];
-      const regex = /[^/]+(?=\.\w+$)/;
-      
-      response.rows.forEach((video, index) => {
-        const match = video.videoUrl.match(regex);
-        if (match) {
-          fileList.value.push({
-            name: match[0], // 文件名
+      existingVideos.value = response.rows;
+      // videoUrl.value = response.rows.map((row: any) => row.videoUrl || "");
+      existingVideos.value = [];
+      // const regex = /[^/]+(?=\.\w+$)/;
+      response.rows.forEach((video: any, index: number) => {
+        // const match = video.videoUrl.match(regex);
+        // if (match) {
+          existingVideos.value.push({
+            name: video.videoTitle,
             chapterId: chapterId,
-            url: video.videoUrl, // 视频URL
-            status: "success", // 标记为已上传成功
-            uid: `${Date.now()}-${index}`, // 生成唯一ID，避免后续冲突
+            url: video.videoUrl,
+            status: "success",
+            // uid: `${Date.now()}-${index}`,
+            percentage: 100,
           });
-        }
+        // }
       });
     } else {
-      fileList.value = []; // 如果没有视频，清空列表
+      existingVideos.value = [];
     }
   } catch (error) {
     console.error("获取视频失败:", error);
@@ -473,149 +366,203 @@ const fetchExistingVideo = async (chapterId: number) => {
 };
 
 const handleUpdateVideo = async (row?: Chapter) => {
-  fileList.value = [];
+  // fileList.value = [];
   fetchExistingVideo(row?.id);
+  chapterId.value = row?.id;
   videoOpen.value = true;
 };
+
 // 上传前的校验
-const beforeUpload = (files: UploadFile[]) => {
-  // const isVideo = file.type.startsWith("video/");
-  // const isLt500K = file.size / 1024 < 500; // 检查文件大小是否小于500KB
-  // if (!isVideo) {
-  //   ElMessage.error("只能上传视频文件！");
-  //   return false;
-  // }
-  // if (!isLt500K) {
-  //   ElMessage.error("视频文件大小不能超过500KB！");
-  //   return false;
-  // }
-  console.log(files);
-
-  ElMessage.success("检查");
-  return true;
-};
-// 上传进度
-const handleProgress = (event: any, file: any) => {
-  if (selectedFile.value && selectedFile.value.uid === file.uid) {
-    selectedFile.value.percentage = Math.round(event.percent || 0);
-  }
-};
-const getStatusText = (status: any) => {
-  switch (status) {
-    case "ready":
-      return "准备中";
-    case "uploading":
-      return "上传中";
-    case "success":
-      return "上传完成";
-    case "fail":
-      return "上传失败";
-    default:
-      return "";
-  }
-};
-
-// 自定义上传方法（支持批量上传）
-const customUpload = async (files: UploadFile[]) => {
-  if (!fileList.value || fileList.value.length === 0) {
-    ElMessage.warning("请先选择视频文件！");
-    return;
-  }
-  // 过滤出未上传的文件（状态不是 success 的文件）
-  if (files.length === 0) {
-    ElMessage.warning("没有新的视频文件需要上传！");
-    return;
-  }
-  try {
-    const formData = new FormData();
-    files.forEach((file) => {
-      formData.append("files", file.raw); // 使用 file.raw 获取原始文件
-    });
-
-    uploading.value = true;
-    const response = await uploadVideos(formData);
-
-    // 更新文件状态为成功
-    fileList.value.forEach((file) => {
-      file.status = "success";
-    });
-    let chapterId = fileList.value[0].chapterId;
-    ElMessage.success("视频上传成功！");
-    videoResponse.value = response.map((item:any) => {
-      return {
-        chapterId,
-        ...item
-      };
-    });
-  } catch (error) {
-    console.error("上传失败:", error);
-    fileList.value.forEach((file) => {
-      file.status = "fail";
-    });
-    ElMessage.error("视频上传失败！");
-    throw error;
-  } finally {
-    uploading.value = false;
-  }
-};
-const startUpload = () => {
-  const filesToUpload = fileList.value.filter(
-    (file) => file.status !== "success"
-  );
-  beforeUpload(filesToUpload);
-  customUpload(filesToUpload);
-};
-const handleFileChange = (file: any, files: any[]) => {
-  fileList.value = files; // 更新文件列表
-};
-// 选择文件
-const selectFile = (file: any) => {
-  selectedFile.value = file;
-};
-// 删除视频
-const handleVideoDelete = (file: any) => {
-  if (fileList.value.length === 1) {
-    ElMessage.error("至少存在一个视频任务");
-    return;
-  }
-  const index = fileList.value.indexOf(file);
-  if (index !== -1) {
-    fileList.value.splice(index, 1);
-  }
-  // 如果删除的是当前选中的文件，清空选中状态
-  if (selectedFile.value && selectedFile.value.uid === file.uid) {
-    selectedFile.value = null;
-  }
-};
-
-// 更新 video.js 来源
-// const updateVideoSources = (url: string) => {
-//   videoOptions.value.sources = [
-//     {
-//       src: url,
-//       type: "application/x-mpegURL", // HLS 类型
-//     },
-//   ];
+// const beforeUpload = (files: UploadFile[]) => {
+//   // for (const file of files) {
+//   //   const isVideo = file.raw?.type.startsWith("video/");
+//   //   const isLt500K = (file.raw?.size || 0) / 1024 < 500;
+//   //   if (!isVideo) {
+//   //     ElMessage.error(`${file.name} 只能上传视频文件！`);
+//   //     return false;
+//   //   }
+//   // }
+//   return true;
 // };
-const submitVideoForm = async () => {
-  uploading.value = false;
-  // uploadSuccess.value = true;
-  // videoUrl.value = response.url; // 设置 HLS URL
-  // updateVideoSources(response.url); // 更新 Video.js 来源
 
-  try {
-    // await fetchExistingVideo();
-    await addVideos(videoResponse.value);
-    // if (selectedFile.value && selectedFile.value.uid === file.uid) {
-    //   selectedFile.value.status = "success";
-    // }
-    ElMessage.success("保存成功！");
-    videoOpen.value = false;
-  } catch (error) {
-    console.error("保存视频信息失败:", error);
-    ElMessage.error("保存视频信息失败！");
-  }
-};
+// const getStatusText = (status: string) => {
+//   switch (status) {
+//     case "ready":
+//       return "准备中";
+//     case "uploading":
+//       return "上传中";
+//     case "success":
+//       return "上传完成";
+//     case "fail":
+//       return "上传失败";
+//     default:
+//       return "";
+//   }
+// };
+
+// 自定义上传方法（单个文件上传）
+// const customUpload = async (file: UploadFile) => {
+//   const chunkSize = 1 * 1024 * 1024; // 切片大小
+//   const fileObj = file.file;
+//   const nameList = fileObj.name.split(".");
+//   fileData.value.name = fileObj.name;
+//   fileData.value.size = fileObj.size;
+//   fileData.value.type = fileObj.type;
+//   fileData.value.suffix = nameList[nameList.length - 1];
+//   if (chunkSize > fileData.value.size) {
+//     // 文件大小小于切片大小，直接上传
+//     try {
+//       const response = await axios.post(
+//         "/dev-api/api/videos/upload",
+//         formData,
+//         {
+//           headers: {
+//             "Content-Type": "multipart/form-data",
+//           },
+//           onUploadProgress: (progressEvent: ProgressEvent) => {
+//             if (progressEvent.total) {
+//               const percentCompleted = Math.round(
+//                 (progressEvent.loaded * 100) / progressEvent.total
+//               );
+//               fileList.value[fileIndex].percentage = percentCompleted;
+//               fileList.value[fileIndex].status = "uploading";
+//               if (selectedFile.value?.uid === file.uid) {
+//                 selectedFile.value.percentage = percentCompleted;
+//               }
+//             }
+//           },
+//         }
+//       );
+
+//       fileList.value[fileIndex].status = "success";
+//       fileList.value[fileIndex].percentage = 100;
+
+//       let chapterId = fileList.value[0].chapterId;
+//       videoResponse.value = [
+//         {
+//           chapterId,
+//           ...response.data,
+//         },
+//       ];
+
+//       ElMessage.success(`${file.name} 上传成功！`);
+//       return response.data;
+//     } catch (error) {
+//       fileList.value[fileIndex].status = "fail";
+//       fileList.value[fileIndex].percentage = 0;
+//       ElMessage.error(`${file.name} 上传失败！`);
+//       console.error(`文件 ${file.name} 上传失败:`, error);
+//       throw error;
+//     } finally {
+//       uploading.value = false;
+//     }
+//   }
+//   batchUpload(fileObj); // 大文件切片上传
+// };
+
+// const batchUpload = async (fileObj: File) => {
+//   // percentage.value = 0
+//   // dialogVisible.value = true
+//   // cancelUpload.value = false
+//   const chunkCount = Math.ceil(fileData.value.size / chunkSize); // 切片数量
+//   fileData.value.md5 = getFileMd5(); // 文件唯一标识
+//   for (let i = 0; i < chunkCount; i++) {
+//     if (cancelUpload.value) return;
+//     const res = await uploadChunkFile(i, fileObj);
+//     if (res.code !== 0) {
+//       dialogVisible.value = false;
+//       ElMessageBox({
+//         message: `${fileData.value.name}上传失败`,
+//         title: "提示",
+//       });
+//       return;
+//     }
+//     if (i === chunkCount - 1) {
+//       setTimeout(() => {
+//         dialogVisible.value = false;
+//         ElMessageBox({
+//           message: `${fileData.value.name}上传成功`,
+//           title: "提示",
+//         });
+//         axios
+//           .post("mergeUpload", { folder: fileData.value.md5 })
+//           .then((res) => updateUrl(res.data));
+//       }, 500);
+//     }
+//   }
+// };
+
+// let controller: AbortController | null = null; // 当前切片上传 AbortController
+// const uploadChunkFile = async (i: number, fileObj: File) => {
+//   const start = i * chunkSize; // 切片开始位置
+//   const end = Math.min(fileData.value.size, start + chunkSize); // 切片结束位置
+//   const chunkFile = fileObj.slice(start, end); // 切片文件
+//   const formData = new FormData(); // formData 参数需要与后端对齐
+//   formData.append("fileName", fileData.value.name);
+//   formData.append("folder", fileData.value.md5);
+//   formData.append("file", chunkFile, String(i + 1)); // 必传字段；若第三个参数不传，切片 filename 默认是 blob ，如果后端是以切片名称来做合并的，则第三个参数一定要传
+//   controller = new AbortController(); // 每一次上传切片都要新生成一个 AbortController ，否则重新上传会失败
+//   return await axios
+//     .post("mergeUpload", formData, {
+//       // 调用后端上传切片接口
+//       onUploadProgress: (data) => {
+//         // 进度条展示
+//         percentage.value = Number(
+//           (
+//             (Math.min(fileData.value.size, start + data.loaded) /
+//               fileData.value.size) *
+//             100
+//           ).toFixed(2)
+//         );
+//       },
+//       signal: controller.signal, // 取消上传
+//     })
+//     .then((res) => updateUrl(res.data));
+// };
+
+// const handleFileChange = (file: any, files: any[]) => {
+//   fileList.value = files.map((f: any) => ({
+//     ...f,
+//     chapterId: fileList.value[0]?.chapterId || f.chapterId,
+//     percentage: f.status === "success" ? 100 : 0,
+//   }));
+// };
+
+// // 选择文件
+// const selectFile = (file: UploadFile) => {
+//   selectedFile.value = file;
+// };
+
+// // 删除视频
+// const handleVideoDelete = (file: UploadFile) => {
+//   if (fileList.value.length === 1) {
+//     ElMessage.error("至少存在一个视频任务");
+//     return;
+//   }
+//   const index = fileList.value.findIndex((f) => f.uid === file.uid);
+//   if (index !== -1) {
+//     fileList.value.splice(index, 1);
+//   }
+//   if (selectedFile.value?.uid === file.uid) {
+//     selectedFile.value = null;
+//   }
+// };
+
+// const submitVideoForm = async () => {
+//   if (!videoResponse.value) {
+//     ElMessage.warning("请先上传视频！");
+//     return;
+//   }
+//   try {
+//     await addVideos(videoResponse.value);
+//     ElMessage.success("保存成功！");
+//     videoOpen.value = false;
+//   } catch (error) {
+//     console.error("保存视频信息失败:", error);
+//     ElMessage.error("保存视频信息失败！");
+//   }
+// };
+
 const submitForm = async () => {
   try {
     await formRef.value?.validate();
@@ -665,6 +612,26 @@ const handleExport = () => {
     });
 };
 
+const handleUploadSuccess = async (files: any[]) => {
+  try {
+    const videoData = files
+      .filter(file => file.status === 'success')
+      .map(file => ({
+        chapterId: chapterId.value,
+        videoTitle: file.name,
+        videoUrl: file.url,
+        duration: 0
+      }))
+    
+    await replaceChapterVideos(chapterId.value,videoData)
+    ElMessage.success('视频保存成功')
+    videoOpen.value = false
+    getList()
+  } catch (error) {
+    ElMessage.error('视频保存失败')
+  }
+}
+
 // 初始化
 onBeforeMount(() => {
   form.value.courseId = courseId.value;
@@ -674,6 +641,7 @@ onMounted(() => {
   getList();
 });
 </script>
+
 <style scoped>
 :deep .el-upload-list__item:hover {
   background: transparent;
@@ -682,7 +650,6 @@ onMounted(() => {
   width: auto;
   margin-right: 10px;
 }
-
 :deep .el-upload-list {
   display: flex;
 }

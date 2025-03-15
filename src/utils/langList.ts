@@ -2,7 +2,7 @@ export const langList = [
     
     {
       category: "en",
-      lang: "English",
+      lang: "🇺🇸 English",
       el_lang: "en",
     },
     // // 波兰语
@@ -56,18 +56,18 @@ export const langList = [
     // 法语
     {
       category: "fra",
-      lang: "Français",
+      lang: "🇫🇷 Français",
       el_lang: "fr",
     },
     // 俄语
     {
       category: "ru",
-      lang: "русский язык",
+      lang: "🇷🇺 русский язык",
       el_lang: "ru",
     },
     {
       category: "zh",   // vue-i18n 中的语言字段 key
-      lang: "简体中文",  // 当前语言名 key
+      lang: "🇨🇳 简体中文",  // 当前语言名 key
       el_lang: "zh-CN", // 对应 Element Plus 中的语言字段 key
     },
     // 荷兰语

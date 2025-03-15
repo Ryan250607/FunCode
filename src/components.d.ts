@@ -102,6 +102,7 @@ declare module '@vue/runtime-core' {
     SvgIcon: typeof import('./components/SvgIcon/index.vue')['default']
     TopNav: typeof import('./components/TopNav/index.vue')['default']
     TreeSelect: typeof import('./components/TreeSelect/index.vue')['default']
+    UploadChunk: typeof import('./components/UploadChunk/index.vue')['default']
     VideoList: typeof import('./components/VideoPlayer/VideoList.vue')['default']
     VideoPlayer: typeof import('./components/VideoPlayer/index.vue')['default']
     VideoPreview: typeof import('./components/VideoPlayer/VideoPreview.vue')['default']

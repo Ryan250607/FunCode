@@ -64,3 +64,11 @@ export function delVideos(id: number) {
     method: "delete",
   });
 }
+
+export function replaceChapterVideos(chapterId:number,data: any) {
+  return request({
+    url: "/system/videos/replace/"+chapterId,
+    method: "post",
+    data: data,
+  });
+}
