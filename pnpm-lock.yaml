@@ -56,6 +56,9 @@ importers:
       jsencrypt:
         specifier: 3.3.1
         version: 3.3.1
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       monaco-editor:
         specifier: ^0.45.0
         version: 0.45.0

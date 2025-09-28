@@ -104,7 +104,7 @@
 
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
       <el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="课程id" prop="courseId" hidden>
+        <el-form-item v-if="false" label="课程id" prop="courseId" hidden>
           <el-input v-model="form.courseId" placeholder="请输入课程id" />
         </el-form-item>
         <el-form-item label="章节标题" prop="title">
@@ -146,10 +146,10 @@
       </template>
     </el-dialog> -->
     <upload-chunk
-        v-model="videoOpen"
-        @success="handleUploadSuccess"
-        :existing-videos="existingVideos"
-      />
+      v-model="videoOpen"
+      @success="handleUploadSuccess"
+      :existing-videos="existingVideos"
+    />
   </div>
 </template>
 
@@ -164,11 +164,13 @@ import {
   addChapters,
   updateChapters,
 } from "@/api/funcode/chapters";
-import {  listVideos,replaceChapterVideos } from "@/api/funcode/video";
+import { listVideos, replaceChapterVideos } from "@/api/funcode/video";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
-const existingVideos = ref<Array<{ name: string; url: string; chapterId?: number }>>([]);
+const existingVideos = ref<
+  Array<{ name: string; url: string; chapterId?: number }>
+>([]);
 // 类型定义
 interface Chapter {
   id?: number;
@@ -255,7 +257,6 @@ const rules = ref({
 // const selectedFile = ref<UploadFile | null>(null);
 const videoResponse = ref<UploadResponse[] | null>(null);
 // const uploading = ref(false);
-
 
 const getList = async () => {
   try {
@@ -346,14 +347,14 @@ const fetchExistingVideo = async (chapterId: number) => {
       response.rows.forEach((video: any, index: number) => {
         // const match = video.videoUrl.match(regex);
         // if (match) {
-          existingVideos.value.push({
-            name: video.videoTitle,
-            chapterId: chapterId,
-            url: video.videoUrl,
-            status: "success",
-            // uid: `${Date.now()}-${index}`,
-            percentage: 100,
-          });
+        existingVideos.value.push({
+          name: video.videoTitle,
+          chapterId: chapterId,
+          url: video.videoUrl,
+          status: "success",
+          // uid: `${Date.now()}-${index}`,
+          percentage: 100,
+        });
         // }
       });
     } else {
@@ -615,22 +616,22 @@ const handleExport = () => {
 const handleUploadSuccess = async (files: any[]) => {
   try {
     const videoData = files
-      .filter(file => file.status === 'success')
-      .map(file => ({
+      .filter((file) => file.status === "success")
+      .map((file) => ({
         chapterId: chapterId.value,
         videoTitle: file.name,
         videoUrl: file.url,
-        duration: 0
-      }))
-    
-    await replaceChapterVideos(chapterId.value,videoData)
-    ElMessage.success('视频保存成功')
-    videoOpen.value = false
-    getList()
+        duration: 0,
+      }));
+
+    await replaceChapterVideos(chapterId.value, videoData);
+    ElMessage.success("视频保存成功");
+    videoOpen.value = false;
+    getList();
   } catch (error) {
-    ElMessage.error('视频保存失败')
+    ElMessage.error("视频保存失败");
   }
-}
+};
 
 // 初始化
 onBeforeMount(() => {

@@ -12,7 +12,7 @@
         class="mb-4"
       >
         <div
-          class="bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg overflow-hidden cursor-pointer"
+          class="bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg overflow-hidden cursor-pointer font-display"
           @click="viewDetail(course)"
         >
           <el-image
@@ -302,7 +302,6 @@ async function viewDetail(course: Course) {
 //     ElMessage.error("加载视频失败，请检查路径是否正确");
 //   }
 // }
-
 
 async function handleVideoEnded(chapter: Chapter | null) {
   if (!chapter) return;

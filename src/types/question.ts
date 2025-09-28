@@ -24,7 +24,10 @@ export interface QuestionSolution {
   memoryUsage: number;
   createdAt: string;
 }
-
+export interface QuestionFilter {
+  difficulty: string; // 难度筛选条件 easy medium hard
+  title: string; // 搜索关键词（字符串）
+}
 export interface Example {
   input: string;
   output: string;

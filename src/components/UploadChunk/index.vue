@@ -11,6 +11,7 @@
     <el-upload
       ref="uploadRef"
       multiple
+      :limit="1"
       :auto-upload="false"
       :file-list="fileList"
       :http-request="customUpload"
@@ -27,7 +28,7 @@
       </template>
       <template #file="{ file }">
         <div
-          class="file-item p-3 border text-white border-gray-200 bg-[#00aeec] rounded-md mb-2 relative"
+          class="file-item p-3 border text-white border-gray-200 bg-[#4d06c4] rounded-md mb-2 relative"
         >
           <!-- 删除按钮右上角 -->
           <!-- <el-button 
@@ -79,7 +80,7 @@
           </div>
           <!-- 状态标签右下角 -->
           <div class="file-status absolute bottom-3 right-3">
-            <el-tag :type="getTagType(file.status)">{{
+            <el-tag :type="getTagType(file.status)" effect="plain">{{
               getStatusText(file.status)
             }}</el-tag>
           </div>
@@ -90,10 +91,10 @@
     <template #footer>
       <div class="dialog-footer flex justify-between items-center">
         <!-- 将 Upload 按钮放到左下角 -->
-        <el-button type="primary" @click="startUpload">Upload</el-button>
+        <el-button type="primary" @click="startUpload">开始上传</el-button>
         <div class="right-buttons flex gap-3">
-          <el-button type="primary" @click="saveFiles">Save</el-button>
-          <el-button @click="visible = false">Cancel</el-button>
+          <el-button type="primary" @click="saveFiles">保存</el-button>
+          <el-button @click="visible = false">取消</el-button>
         </div>
       </div>
     </template>
@@ -110,10 +111,8 @@ import { checkFileByMd5, initMultPartFile, mergeFileByMd5 } from "@/api/upload";
 import cutFile from "@/utils/md5/core/cutFile";
 import { MerkleTree } from "@/utils/md5/core/MerkleTree";
 import { convertFileSizeUnit, downloadFileByBlob } from "@/utils/fileUtil";
-
 const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB per chunk
 const limit = pLimit(3);
-
 interface ChunkFileUrlType {
   url: string;
   file: Blob;
@@ -173,6 +172,9 @@ watch(
       }));
       fileList.value = [...existingFiles];
       state.dataSource = [...existingFiles];
+    } else {
+      fileList.value = [];
+      state.dataSource = [];
     }
   },
   { immediate: true }
@@ -194,7 +196,7 @@ const getTagType = (status: string): string => {
     preparation: "info",
     preupload: "info",
     uploading: "info",
-    success: "info",
+    success: "success",
     error: "danger",
   };
   return tagMap[status] || "info";
@@ -397,8 +399,10 @@ const initSliceFile = async (item: FileTableDataType, initData: any) => {
     });
     return needUploadFile;
   }
-
+  //如果listParts有值（存在已上传的分片），则筛选出未上传的分片
   item.chunkFileList?.forEach((chunk, index) => {
+    // 关键对比逻辑：检查当前分片索引是否在listParts中
+    // 注意：后端listParts从1开始（MinIO的partNumber），前端索引从0开始，因此需要+1转换
     const i = (listParts || []).findIndex((v: number) => index + 1 === v);
     if (i === -1) {
       needUploadFile.push({ url: data.urls[index], file: chunk });

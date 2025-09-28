@@ -18,25 +18,16 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button
-          type="primary"
-          :icon="Search"
-          @click="handleQuery"
+        <el-button type="primary" :icon="Search" @click="handleQuery"
           >搜索</el-button
         >
-        <el-button :icon="Refresh" @click="resetQuery"
-          >重置</el-button
-        >
+        <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          :icon="Plus"
-          @click="handleAdd"
+        <el-button type="primary" plain :icon="Plus" @click="handleAdd"
           >新增</el-button
         >
       </el-col>
@@ -61,11 +52,7 @@
         >
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          :icon="Download"
-          @click="handleExport"
+        <el-button type="warning" plain :icon="Download" @click="handleExport"
           >导出</el-button
         >
       </el-col>
@@ -92,11 +79,7 @@
         class-name="small-padding fixed-width"
       >
         <template #default="{ row }">
-          <el-button
-            type="primary"
-            link
-            :icon="Edit"
-            @click="handleUpdate(row)"
+          <el-button type="primary" link :icon="Edit" @click="handleUpdate(row)"
             >修改</el-button
           >
           <el-button
@@ -148,8 +131,18 @@
             placeholder="请输入内容"
           />
         </el-form-item>
-        <el-form-item label="运行时间限制" prop="timeLimit">
-          <el-input v-model="form.timeLimit" placeholder="运行时间限制" />
+        <el-form-item label="时间限制" prop="timeLimit">
+          <el-input v-model="form.timeLimit" placeholder="时间限制" />
+        </el-form-item>
+        <el-form-item label="难度" prop="difficulty">
+          <el-select v-model="form.difficulty" placeholder="Select" style="width: 240px">
+            <el-option
+              v-for="item in difficultyOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            /> 
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -163,42 +156,49 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed, nextTick } from 'vue';
-import { useRoute } from 'vue-router';
-import { ElMessage, ElMessageBox, FormInstance } from 'element-plus';
-import { Search, Refresh, Plus, Edit, Delete, Download } from '@element-plus/icons-vue';
-import { 
-  listQuestions, 
-  getQuestions, 
-  delQuestions, 
-  addQuestions, 
-  updateQuestions 
-} from '@/api/funcode/questions';
+import { ref, reactive, onMounted, computed, nextTick } from "vue";
+import { useRoute } from "vue-router";
+import { ElMessage, ElMessageBox, FormInstance } from "element-plus";
+import {
+  Search,
+  Refresh,
+  Plus,
+  Edit,
+  Delete,
+  Download,
+} from "@element-plus/icons-vue";
+import {
+  listQuestions,
+  getQuestions,
+  delQuestions,
+  addQuestions,
+  updateQuestions,
+} from "@/api/funcode/questions";
 // Define the Question interface
 
-
-import { useDownload } from '@/hooks/useDownload';
+import { useDownload } from "@/hooks/useDownload";
 
 // 组件命名
 defineOptions({
-  name: 'Questions',
+  name: "Questions",
 });
 interface Question {
-    id?: number | string;
-    courseId: string;
-    title: string;
-    description: string;
-    initialCode: string;
-    answerCode: string;
-    timeLimit: string | number;
+  id?: number | string;
+  courseId: string;
+  title: string;
+  description: string;
+  initialCode: string;
+  answerCode: string;
+  timeLimit: string | number;
+  difficulty: string;
 }
 
 // Define the QuestionQuery interface for search parameters
 interface QuestionQuery {
-    pageNum: number;
-    pageSize: number;
-    title?: string;
-    courseId?: string;
+  pageNum: number;
+  pageSize: number;
+  title?: string;
+  courseId?: string;
 }
 // 路由参数
 const route = useRoute();
@@ -212,7 +212,7 @@ const loading = ref(true);
 const total = ref(0);
 const showSearch = ref(true);
 const open = ref(false);
-const title = ref('');
+const title = ref("");
 const questionsList = ref<Question[]>([]);
 
 // 多选相关
@@ -224,41 +224,43 @@ const multiple = computed(() => ids.value.length === 0);
 const queryParams = reactive<QuestionQuery>({
   pageNum: 1,
   pageSize: 10,
-  title: '',
-  courseId: route.query.courseId as string
+  title: "",
+  courseId: route.query.courseId as string,
 });
 
 // 表单数据
 const form = reactive<Question>({
   id: undefined,
-  courseId: '',
-  title: '',
-  description: '',
-  initialCode: '',
-  answerCode: '',
-  timeLimit: ''
+  courseId: "",
+  title: "",
+  description: "",
+  initialCode: "",
+  answerCode: "",
+  timeLimit: "",
+  difficulty: "easy", // 默认难度
 });
 
+const difficultyOptions = [
+  { value: "easy", label: "简单" },
+  { value: "medium", label: "中等" },
+  { value: "hard", label: "困难" },
+];
 // 验证规则
 const rules = reactive({
-  courseId: [
-    { required: true, message: '课程id不能为空', trigger: 'blur' }
-  ],
-  title: [
-    { required: true, message: '题目标题不能为空', trigger: 'blur' }
-  ],
+  courseId: [{ required: true, message: "课程id不能为空", trigger: "blur" }],
+  title: [{ required: true, message: "题目标题不能为空", trigger: "blur" }],
   description: [
-    { required: true, message: '题目描述不能为空', trigger: 'blur' }
+    { required: true, message: "题目描述不能为空", trigger: "blur" },
   ],
   initialCode: [
-    { required: true, message: '初始代码不能为空', trigger: 'blur' }
+    { required: true, message: "初始代码不能为空", trigger: "blur" },
   ],
   answerCode: [
-    { required: true, message: '参考答案不能为空', trigger: 'blur' }
+    { required: true, message: "参考答案不能为空", trigger: "blur" },
   ],
   timeLimit: [
-    { required: true, message: '时间限制(秒)不能为空', trigger: 'blur' }
-  ]
+    { required: true, message: "时间限制(秒)不能为空", trigger: "blur" },
+  ],
 });
 
 /** 初始化 */
@@ -282,12 +284,12 @@ const getList = async () => {
 const reset = () => {
   Object.assign(form, {
     id: undefined,
-    courseId: '',
-    title: '',
-    description: '',
-    initialCode: '',
-    answerCode: '',
-    timeLimit: '',
+    courseId: "",
+    title: "",
+    description: "",
+    initialCode: "",
+    answerCode: "",
+    timeLimit: "",
   });
   nextTick(() => {
     formRef.value?.resetFields();
@@ -308,14 +310,14 @@ const resetQuery = () => {
 
 /** 多选框选中数据 */
 const handleSelectionChange = (selection: Question[]) => {
-  ids.value = selection.map(item => item.id as number | string);
+  ids.value = selection.map((item) => item.id as number | string);
 };
 
 /** 新增按钮操作 */
 const handleAdd = () => {
   reset();
   open.value = true;
-  title.value = '添加编程问题';
+  title.value = "添加编程问题";
 };
 
 /** 修改按钮操作 */
@@ -326,9 +328,9 @@ const handleUpdate = async (row?: Question) => {
     const res = await getQuestions(id);
     Object.assign(form, res.data);
     open.value = true;
-    title.value = '修改编程问题';
+    title.value = "修改编程问题";
   } catch (error) {
-    console.error('获取问题详情失败', error);
+    console.error("获取问题详情失败", error);
   }
 };
 
@@ -336,19 +338,19 @@ const handleUpdate = async (row?: Question) => {
 const submitForm = async () => {
   try {
     await formRef.value?.validate();
-    
+
     if (form.id) {
       await updateQuestions(form);
-      ElMessage.success('修改成功');
+      ElMessage.success("修改成功");
     } else {
       await addQuestions(form);
-      ElMessage.success('新增成功');
+      ElMessage.success("新增成功");
     }
-    
+
     open.value = false;
     getList();
   } catch (error) {
-    console.error('表单验证失败', error);
+    console.error("表单验证失败", error);
   }
 };
 
@@ -361,14 +363,16 @@ const cancel = () => {
 /** 删除按钮操作 */
 const handleDelete = async (row?: Question) => {
   const deleteIds = row?.id || ids.value;
-  
+
   try {
-    await ElMessageBox.confirm(`是否确认删除编程问题编号为"${deleteIds}"的数据项？`);
+    await ElMessageBox.confirm(
+      `是否确认删除编程问题编号为"${deleteIds}"的数据项？`
+    );
     await delQuestions(deleteIds);
     getList();
-    ElMessage.success('删除成功');
+    ElMessage.success("删除成功");
   } catch (error) {
-    console.error('删除操作被取消或失败', error);
+    console.error("删除操作被取消或失败", error);
   }
 };
 
@@ -376,7 +380,7 @@ const handleDelete = async (row?: Question) => {
 const handleExport = () => {
   const { download } = useDownload();
   download(
-    'system/questions/export',
+    "system/questions/export",
     {
       ...queryParams,
     },
@@ -392,7 +396,7 @@ defineExpose({
   handleAdd,
   handleUpdate,
   handleDelete,
-  handleExport
+  handleExport,
 });
 </script>
 

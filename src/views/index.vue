@@ -1,11 +1,7 @@
 <template>
   <div
-    class="p-6 md:p-8 mx-auto max-w-[1300px] bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-md"
+    class="p-6 md:p-8 mx-auto max-w-[1300px] from-blue-50 to-indigo-50 rounded-xl shadow-md"
   >
-    <h1 class="text-2xl md:text-3xl font-bold mb-6 text-indigo-800 text-center">
-      学习数据分析
-    </h1>
-
     <el-row :gutter="24">
       <!-- 用户学习进度分布（饼图） -->
       <el-col :xs="24" :sm="24" :md="12" class="mb-6">

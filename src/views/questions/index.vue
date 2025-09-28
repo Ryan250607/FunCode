@@ -11,14 +11,14 @@
       <template #header>
         <div class="list-header">
           <h2 class="title">题目列表</h2>
-          <el-space>
+          <!-- <el-space>
             <el-switch
               v-model="onlyShowUnsolved"
               active-text="仅显示未解决"
               @change="handleFilterChange"
             />
            
-          </el-space>
+          </el-space> -->
         </div>
       </template>
 
@@ -85,7 +85,7 @@ import { useRouter } from "vue-router";
 // import QuestionStatusTag from './components/QuestionStatusTag.vue';
 import { listQuestions } from "@/api/funcode/questions";
 import type { Question } from "@/types";
-
+import {QuestionFilter} from "@/types"
 // 路由
 const router = useRouter();
 // const questionStore = useQuestionStore();
@@ -96,13 +96,12 @@ const questionList = ref<Question[]>([]);
 const totalQuestions = ref(0);
 const currentPage = ref(1);
 const pageSize = ref(20);
-const onlyShowUnsolved = ref(false);
+// const onlyShowUnsolved = ref(false);
 
 // 过滤器状态
-const filters = reactive<QuestionFilter>({
-  difficulty: [],
-  tags: [],
-  searchKeyword: "",
+const filters = ref<QuestionFilter>({
+  difficulty: '',
+  title: "",
 });
 
 // 生命周期钩子
@@ -117,11 +116,12 @@ const fetchQuestionList = async () => {
     const params = {
       page: currentPage.value,
       pageSize: pageSize.value,
-      onlyUnsolved: onlyShowUnsolved.value,
-      ...filters,
+      // onlyUnsolved: onlyShowUnsolved.value,
+      ...filters.value,
     };
 
-    const { rows, total } = await listQuestions(params);
+    const response = await listQuestions(params);
+    const { rows, total } = response;
     questionList.value = rows;
     totalQuestions.value = total;
   } catch (error) {

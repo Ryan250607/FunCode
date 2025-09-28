@@ -93,6 +93,7 @@ declare module '@vue/runtime-core' {
     QuestionFilters: typeof import('./components/QuestionFilters/index.vue')['default']
     Result: typeof import('./components/Crontab/result.vue')['default']
     ResultDisplay: typeof import('./components/ResultDisplay.vue')['default']
+    ResultShow: typeof import('./components/ResultShow.vue')['default']
     RightToolbar: typeof import('./components/RightToolbar/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

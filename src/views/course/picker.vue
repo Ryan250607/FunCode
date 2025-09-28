@@ -1,19 +1,10 @@
-<!-- src/views/Home.vue -->
 <template>
-  <div class="px-5 pt-5 pb-0">
+  <div class="my-4 mx-6">
     <!-- 课程列表 -->
-    <el-row :gutter="20" justify="start">
-      <el-col
-        v-for="course in courses"
-        :key="course.id"
-        :xs="24"
-        :sm="12"
-        :md="8"
-        :lg="6"
-        class="mb-2"
-      >
+    <div class="grid grid-cols-4 gap-5">
+      <div v-for="course in courses" :key="course.id" class="mb-2">
         <div
-          class="bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg overflow-hidden cursor-pointer"
+          class="bg-white h-full flex flex-col shadow hover:shadow-xl transition-shadow duration-300 rounded-xl overflow-hidden border border-gray-200 font-display"
         >
           <el-image
             :src="
@@ -21,16 +12,16 @@
                 ? course.coverImage
                 : baseURL + course.coverImage
             "
-            class="w-full aspect-[4/3] object-cover rounded-t-lg"
+            class="w-full aspect-[4/3] object-cover rounded-t-xl"
           ></el-image>
           <div class="flex flex-col p-2">
             <div class="flex items-center gap-2 mb-2">
-              <h3 class="text-base font-bold text-gray-800 truncate">
+              <h3 class="text-base font-semibold text-gray-900 truncate">
                 {{ course.title }}
               </h3>
               <DifficultyTag :level="course.difficulty" />
             </div>
-            <div class="mt-auto">
+            <div class="mt-auto space-y-2">
               <el-button
                 v-if="!isCourseSelected(course.id)"
                 type="primary"
@@ -50,8 +41,8 @@
             </div>
           </div>
         </div>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -152,8 +143,6 @@ const cancelCourse = async (courseId: number) => {
   } catch (error) {
     if (error !== "cancel") {
       ElMessage.error("退选失败");
-    } else {
-      ElMessage.info("已取消退选");
     }
   }
 };

@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="absolute top-0 right-0 p-4">
-    <LanguageToggle />
+      <LanguageToggle />
     </div>
     <el-form
       ref="loginRef"
@@ -14,10 +14,9 @@
           <span class="mr-3">
             <img src="@/assets/logo/logo.png" alt="logo" class="w-10 h-10" />
           </span>
-          <span class="font-semibold text-xl">FunCode</span>
+          <span class="text-xl font-semibold font-display">FunCode</span>
         </div>
-        <div class="mt-2 mb-10 text-center">
-        </div>
+        <div class="mt-2 mb-10 text-center"></div>
       </div>
       <el-form-item prop="username">
         <el-input
@@ -40,8 +39,9 @@
           type="password"
           size="large"
           auto-complete="off"
-         :placeholder="t('Please_enter_your_password')"
+          :placeholder="t('Please_enter_your_password')"
           @keyup.enter="handleLogin"
+          show-password
         >
           <template #prefix
             ><el-icon><Lock /></el-icon
@@ -68,14 +68,14 @@
       <el-checkbox
         v-model="loginForm.rememberMe"
         style="margin: 0px 0px 25px 0px"
-        >{{ t('remember_password') }}</el-checkbox
+        >{{ t("remember_password") }}</el-checkbox
       >
       <el-form-item style="width: 100%">
         <el-button
           :loading="loading"
           size="large"
           type="primary"
-          class="login-btn w-full bg-white text-primary-400 hover:bg-primary hover:text-white transition-all duration-300"
+          class="login-btn w-full bg-white text-primary-300 hover:bg-primary-300 hover:text-white transition-all duration-500"
           style="width: 100%"
           @click.prevent="handleLogin"
         >
@@ -117,8 +117,20 @@ const loginForm = ref<any>({
   uuid: "",
 });
 const loginRules = {
-  username: [{ required: true, trigger: "blur",message: t('Please_enter_your_username') }],
-  password: [{ required: true, trigger: "blur" ,message: t("Please_enter_your_password"),}],
+  username: [
+    {
+      required: true,
+      trigger: "blur",
+      message: t("Please_enter_your_username"),
+    },
+  ],
+  password: [
+    {
+      required: true,
+      trigger: "blur",
+      message: t("Please_enter_your_password"),
+    },
+  ],
   code: [{ required: true, trigger: "change" }],
 };
 
