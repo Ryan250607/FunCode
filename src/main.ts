@@ -54,13 +54,13 @@ import ImagePreview from "@/components/ImagePreview/index.vue";
 import TreeSelect from "@/components/TreeSelect/index.vue";
 // 字典标签组件
 import DictTag from "@/components/DictTag/index.vue";
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faLanguage } from '@fortawesome/free-solid-svg-icons'
-import { faUser } from '@fortawesome/free-regular-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faLanguage } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 // i18n
-import i18n from '@/i18n/index'
-library.add(faUser,faLanguage)
+import i18n from "@/i18n/index";
+library.add(faUser, faLanguage);
 
 const app = createApp(App);
 
@@ -89,10 +89,17 @@ app.use(router);
 app.use(store);
 app.use(plugins);
 app.use(elementIcons);
-app.use(i18n)
+app.use(i18n);
 app.component("svg-icon", SvgIcon);
 
 directive(app);
 app.use(ElementPlus);
 
 app.mount("#app");
+// 挂载完成后隐藏 loader
+const loader = document.getElementById("loader-wrapper");
+// if (loader) {
+//   setTimeout(() => {
+//     loader.style.display = "none";
+//   }, 2000); // 延迟2秒方便观察
+// }

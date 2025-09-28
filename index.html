@@ -1,215 +1,237 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="renderer" content="webkit">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <link rel="icon" href="/favicon.ico">
-  <title>FunCode</title>
-  <!--[if lt IE 11]><script>window.location.href='/html/ie.html';</script><![endif]-->
-  <style>
-    html,
-    body,
-    #app {
-      height: 100%;
-      margin: 0px;
-      padding: 0px;
-    }
-
-    .chromeframe {
-      margin: 0.2em 0;
-      background: #ccc;
-      color: #000;
-      padding: 0.2em 0;
-    }
-
-    #loader-wrapper {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 999999;
-    }
-
-    #loader {
-      display: block;
-      position: relative;
-      left: 50%;
-      top: 50%;
-      width: 150px;
-      height: 150px;
-      margin: -75px 0 0 -75px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      border-top-color: #FFF;
-      -webkit-animation: spin 2s linear infinite;
-      -ms-animation: spin 2s linear infinite;
-      -moz-animation: spin 2s linear infinite;
-      -o-animation: spin 2s linear infinite;
-      animation: spin 2s linear infinite;
-      z-index: 1001;
-    }
-
-    #loader:before {
-      content: "";
-      position: absolute;
-      top: 5px;
-      left: 5px;
-      right: 5px;
-      bottom: 5px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      border-top-color: #FFF;
-      -webkit-animation: spin 3s linear infinite;
-      -moz-animation: spin 3s linear infinite;
-      -o-animation: spin 3s linear infinite;
-      -ms-animation: spin 3s linear infinite;
-      animation: spin 3s linear infinite;
-    }
-
-    #loader:after {
-      content: "";
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      right: 15px;
-      bottom: 15px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      border-top-color: #FFF;
-      -moz-animation: spin 1.5s linear infinite;
-      -o-animation: spin 1.5s linear infinite;
-      -ms-animation: spin 1.5s linear infinite;
-      -webkit-animation: spin 1.5s linear infinite;
-      animation: spin 1.5s linear infinite;
-    }
-
-
-    @-webkit-keyframes spin {
-      0% {
-        -webkit-transform: rotate(0deg);
-        -ms-transform: rotate(0deg);
-        transform: rotate(0deg);
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <link rel="icon" href="/favicon.ico" />
+    <title>FunCode</title>
+    <!--[if lt IE 11
+      ]><script>
+        window.location.href = "/html/ie.html";
+      </script><!
+    [endif]-->
+    <style>
+      html,
+      body,
+      #app {
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+      }
+      /* 容器模拟 html,body 样式 */
+      .loader-wrapper {
+        width: 100vw;
+        height: 100vh; /* 占满整个视口高度 */
+        background: var(--bg); /* 背景色 */
+        display: flex;
+        align-items: center;
+        justify-content: center; /* 水平垂直居中 */
+        overflow: hidden;
+      }
+      :root {
+        --theme: #6610f5; /* 主题色 */
+        --bg-light: #ffffff;
+        --bg-dark: #304156;
+        --text-light: #001529;
+        --text-dark: #ffffff;
       }
 
-      100% {
-        -webkit-transform: rotate(360deg);
-        -ms-transform: rotate(360deg);
-        transform: rotate(360deg);
+      /* 深色模式自动切换 */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: var(--bg-dark);
+          --text: var(--text-dark);
+        }
       }
-    }
-
-    @keyframes spin {
-      0% {
-        -webkit-transform: rotate(0deg);
-        -ms-transform: rotate(0deg);
-        transform: rotate(0deg);
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: var(--bg-light);
+          --text: var(--text-light);
+        }
       }
 
-      100% {
-        -webkit-transform: rotate(360deg);
-        -ms-transform: rotate(360deg);
-        transform: rotate(360deg);
+      * {
+        box-sizing: border-box;
       }
-    }
 
+      /* 玻璃卡片 */
+      .loader-card {
+        width: 240px;
+        height: 240px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+        transform-style: preserve-3d;
+        animation: float 6s ease-in-out infinite;
+      }
 
-    #loader-wrapper .loader-section {
-      position: fixed;
-      top: 0;
-      width: 51%;
-      height: 100%;
-      background: #7171C6;
-      z-index: 1000;
-      -webkit-transform: translateX(0);
-      -ms-transform: translateX(0);
-      transform: translateX(0);
-    }
+      /* 3D 浮动 */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotateX(5deg) rotateY(0);
+        }
+        50% {
+          transform: translateY(-8px) rotateX(5deg) rotateY(3deg);
+        }
+      }
 
-    #loader-wrapper .loader-section.section-left {
-      left: 0;
-    }
+      /* 圆环 */
+      .ring {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        transform-style: preserve-3d;
+        animation: spin 1.2s linear infinite;
+      }
+      .ring svg {
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 0 10px var(--theme));
+      }
+      .ring circle {
+        fill: none;
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: 283;
+        stroke-dashoffset: 283;
+        animation: dash 1.2s ease-in-out infinite;
+        stroke: url(#g);
+      }
 
-    #loader-wrapper .loader-section.section-right {
-      right: 0;
-    }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes dash {
+        0% {
+          stroke-dashoffset: 283;
+        }
+        50% {
+          stroke-dashoffset: 70;
+        }
+        100% {
+          stroke-dashoffset: 283;
+        }
+      }
 
+      /* 文字 */
+      .tip {
+        margin-top: 24px;
+        font-size: 15px;
+        color: var(--text);
+        letter-spacing: 0.5px;
+        opacity: 0.8;
+      }
 
-    .loaded #loader-wrapper .loader-section.section-left {
-      -webkit-transform: translateX(-100%);
-      -ms-transform: translateX(-100%);
-      transform: translateX(-100%);
-      -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-      transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-    }
+      /* 微粒子背景 */
+      .particles {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+      .particles span {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: var(--theme);
+        border-radius: 50%;
+        opacity: 0;
+        animation: drift 12s linear infinite;
+      }
+      .particles span:nth-child(1) {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+      .particles span:nth-child(2) {
+        top: 80%;
+        left: 20%;
+        animation-delay: 2s;
+      }
+      .particles span:nth-child(3) {
+        top: 30%;
+        left: 80%;
+        animation-delay: 4s;
+      }
+      .particles span:nth-child(4) {
+        top: 90%;
+        left: 70%;
+        animation-delay: 6s;
+      }
+      .particles span:nth-child(5) {
+        top: 50%;
+        left: 50%;
+        animation-delay: 8s;
+      }
 
-    .loaded #loader-wrapper .loader-section.section-right {
-      -webkit-transform: translateX(100%);
-      -ms-transform: translateX(100%);
-      transform: translateX(100%);
-      -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-      transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-    }
+      @keyframes drift {
+        0% {
+          transform: translate(0, 0) scale(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        100% {
+          transform: translate(calc(var(--x) * 60px), calc(var(--y) * 60px))
+            scale(1.5);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
 
-    .loaded #loader {
-      opacity: 0;
-      -webkit-transition: all 0.3s ease-out;
-      transition: all 0.3s ease-out;
-    }
+  <body>
+    <script type="module" src="/src/main.ts"></script>
+    <div id="app">
+      <div class="loader-wrapper">
+        <div class="loader-card">
+          <div class="particles">
+            <span style="--x: 1; --y: -1"></span>
+            <span style="--x: -1; --y: 1"></span>
+            <span style="--x: 1; --y: 1"></span>
+            <span style="--x: -1; --y: -1"></span>
+            <span style="--x: 0; --y: 1"></span>
+          </div>
 
-    .loaded #loader-wrapper {
-      visibility: hidden;
-      -webkit-transform: translateY(-100%);
-      -ms-transform: translateY(-100%);
-      transform: translateY(-100%);
-      -webkit-transition: all 0.3s 1s ease-out;
-      transition: all 0.3s 1s ease-out;
-    }
+          <div class="ring">
+            <svg viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                  <stop
+                    offset="0%"
+                    stop-color="var(--theme)"
+                    stop-opacity="0.2"
+                  />
+                  <stop
+                    offset="100%"
+                    stop-color="var(--theme)"
+                    stop-opacity="1"
+                  />
+                </linearGradient>
+              </defs>
+              <circle cx="50" cy="50" r="45" />
+            </svg>
+          </div>
 
-    .no-js #loader-wrapper {
-      display: none;
-    }
-
-    .no-js h1 {
-      color: #222222;
-    }
-
-    #loader-wrapper .load_title {
-      font-family: 'Open Sans';
-      color: #FFF;
-      font-size: 19px;
-      width: 100%;
-      text-align: center;
-      z-index: 9999999999999;
-      position: absolute;
-      top: 60%;
-      opacity: 1;
-      line-height: 30px;
-    }
-
-    #loader-wrapper .load_title span {
-      font-weight: normal;
-      font-style: italic;
-      font-size: 13px;
-      color: #FFF;
-      opacity: 0.5;
-    }
-  </style>
-</head>
-
-<body>
-  <div id="app">
-    <div id="loader-wrapper">
-      <div id="loader"></div>
-      <div class="loader-section section-left"></div>
-      <div class="loader-section section-right"></div>
-      <div class="load_title">正在加载系统资源，请耐心等待</div>
+          <div class="tip">loading...</div>
+        </div>
+      </div>
     </div>
-  </div>
-  <script type="module" src="/src/main.ts"></script>
-</body>
-
+  </body>
 </html>

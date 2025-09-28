@@ -30,12 +30,7 @@
               >
                 选课
               </el-button>
-              <el-button
-                v-else
-                type="danger"
-                class="w-full"
-                @click="cancelCourse(course.id)"
-              >
+              <el-button v-else class="w-full" @click="cancelCourse(course.id)">
                 退选
               </el-button>
             </div>
