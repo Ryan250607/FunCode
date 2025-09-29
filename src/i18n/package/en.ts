@@ -1,4 +1,3 @@
-
 const en = {
   // 路由名称
   router_home: "Home",
@@ -14,7 +13,7 @@ const en = {
     dashboard: "Dashboard",
     education: "My Courses",
     booksearch: "Course Selection Center",
-    
+
     system: "System Management",
     user: "User Management",
     peoples: "Role Management",
@@ -30,7 +29,7 @@ const en = {
     course: "Course Management",
     checklist: "Grading Center",
     tool: "Tool Center",
-    
+
     log: "Log Records",
     online: "Online Users",
     job: "Task Scheduling",
@@ -80,7 +79,7 @@ const en = {
   Add_personnel: "Add Personnel",
   Account_name: "Account Name",
   password: "Password",
-  remember_password: "Remember Me",
+  remember_password: "Remember me",
   description: "Description",
   log_out: "Logout",
   log_out_confirm: "Are you sure you want to log out?",
@@ -127,7 +126,7 @@ const en = {
   Theme_Mode: "Theme Mode",
 
   // 视频相关
-  video_upload_title:"Upload"
+  video_upload_title: "Upload",
 };
 
 export default en;

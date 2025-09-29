@@ -11,12 +11,12 @@
     >
       <div>
         <div class="flex justify-center items-center">
-          <span class="mr-3">
+          <span class="mr-5">
             <img src="@/assets/logo/logo.png" alt="logo" class="w-10 h-10" />
           </span>
-          <span class="text-xl font-semibold font-display">FunCode</span>
+          <span class="text-3xl font-semibold font-display">FunCode</span>
         </div>
-        <div class="mt-2 mb-10 text-center"></div>
+        <div class="mt-2 mb-20 text-center"></div>
       </div>
       <el-form-item prop="username">
         <el-input
@@ -54,7 +54,6 @@
           size="large"
           auto-complete="off"
           :placeholder="t('Please_enter_your_verification_code')"
-          style="width: 63%"
           @keyup.enter="handleLogin"
         >
           <template #prefix
@@ -65,17 +64,19 @@
           <img :src="codeUrl" @click="getCode" class="login-code-img" />
         </div>
       </el-form-item>
-      <el-checkbox
-        v-model="loginForm.rememberMe"
-        style="margin: 0px 0px 25px 0px"
-        >{{ t("remember_password") }}</el-checkbox
-      >
+      <div class="mb-6">
+        <el-checkbox v-model="loginForm.rememberMe">
+          <span class="text-sm text-black/85">{{
+            t("remember_password")
+          }}</span>
+        </el-checkbox>
+      </div>
+
       <el-form-item style="width: 100%">
         <el-button
           :loading="loading"
           size="large"
-          type="primary"
-          class="login-btn w-full bg-white text-primary-300 hover:bg-primary-300 hover:text-white transition-all duration-500"
+          class="login-btn w-full bg-white text-primary-300 transition-all duration-500"
           style="width: 100%"
           @click.prevent="handleLogin"
         >
@@ -217,20 +218,23 @@ getCookie();
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
+  background-image: url("../assets/images/login-background.png");
   background-size: cover;
 }
 
 .login-form {
   border-radius: 6px;
-  background: #ffffff;
   width: 400px;
+  height: 600px;
   padding: 25px 25px 5px 25px;
   .el-input {
     height: 40px;
     input {
       height: 40px;
     }
+  }
+  .el-form-item {
+    margin-bottom: 24px;
   }
   .input-icon {
     height: 39px;
@@ -259,7 +263,7 @@ getCookie();
   bottom: 0;
   width: 100%;
   text-align: center;
-  color: #fff;
+  color: rgba(0, 0, 0, 0.65);
   font-family: Arial;
   font-size: 12px;
   letter-spacing: 1px;

@@ -13,7 +13,7 @@ const fra = {
     dashboard: "Tableau de bord",
     education: "Mes cours",
     booksearch: "Centre de sélection de cours",
-    
+
     system: "Gestion du système",
     user: "Gestion des utilisateurs",
     peoples: "Gestion des rôles",
@@ -29,7 +29,7 @@ const fra = {
     course: "Gestion des cours",
     checklist: "Centre de correction",
     tool: "Centre d'outils",
-    
+
     log: "Enregistrements de logs",
     online: "Utilisateurs en ligne",
     job: "Planification des tâches",
@@ -42,6 +42,8 @@ const fra = {
     logininfor: "Journaux de connexion",
     upload: "Téléchargement de fichiers",
     textarea: "Zone de texte",
+    trophy: "Problèmes",
+    submit: "Envoyer",
   },
 
   // 公共字段
@@ -108,7 +110,8 @@ const fra = {
   Please_enter_your_email: "Veuillez entrer votre adresse e-mail",
   password_mismatch: "Les mots de passe ne correspondent pas",
   Please_enter_your_password_again: "Veuillez confirmer votre mot de passe",
-  Please_enter_your_verification_code: "Veuillez entrer le code de vérification",
+  Please_enter_your_verification_code:
+    "Veuillez entrer le code de vérification",
   verification_code: "Code de vérification",
   login: "Se connecter",
   confirm_password: "Confirmer le mot de passe",
